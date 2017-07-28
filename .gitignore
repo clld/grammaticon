@@ -1,0 +1,39 @@
+data
+
+development.ini
+*.py[cod]
+*.komodoproject
+*/static/download
+
+# C extensions
+*.so
+
+# Packages
+.eggs
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+.idea
