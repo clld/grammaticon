@@ -20,4 +20,5 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.include('clldmpg')
     config.register_resource('concept', models.Concept, IConcept, with_index=True)
+    config.add_route('relations', '/relations')
     return config.make_wsgi_app()

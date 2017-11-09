@@ -86,6 +86,13 @@ def main(args):
                 concept=data['Concept'][obj['concept_id']],
                 metafeature=data['Metafeature'][obj['meta_feature__id']])
 
+    for obj in reader(args.data_file('x_Concepthierarchy.csv'), dicts=True):
+        child = data['Concept'].get(obj['concept_id'])
+        if child:
+            parent = data['Concept'].get(obj['concept_parent_id'])
+            if parent:
+                DBSession.add(models.ConceptRelation(parent=parent, child=child))
+
 
 def prime_cache(args):
     """If data needs to be denormalized for lookup, do that here.

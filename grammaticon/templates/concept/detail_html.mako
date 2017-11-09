@@ -20,11 +20,31 @@
             </dd>
         % endif
     % endfor
-</dl>
+</dt>
 
-<h3>Related metafeatures:</h3>
+% if ctx.metafeature_assocs:
+    <h4>Related metafeatures:</h4>
+    <ul>
+        % for ca in ctx.metafeature_assocs:
+            <li>${h.link(req, ca.metafeature)}</li>
+        % endfor
+    </ul>
+% endif
+
+% if ctx.parents:
+    <h4>Defining concepts:</h4>
+    <ul>
+        % for c in ctx.parents:
+            <li>${h.link(req, c)}</li>
+        % endfor
+    </ul>
+% endif
+
+% if ctx.children:
+<h4>Derived concepts:</h4>
 <ul>
-    % for ca in ctx.metafeature_assocs:
-        <li>${h.link(req, ca.metafeature)}</li>
+    % for c in ctx.children:
+        <li>${h.link(req, c)}</li>
     % endfor
 </ul>
+% endif

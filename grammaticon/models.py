@@ -23,6 +23,7 @@ from grammaticon.interfaces import IConcept
 
 @implementer(IConcept)
 class Concept(IdNameDescriptionMixin, Base):
+    pk = Column(Integer, primary_key=True)
     quotation = Column(Unicode)
     comments = Column(Unicode)
     GOLD_counterpart = Column(Unicode)
@@ -31,6 +32,23 @@ class Concept(IdNameDescriptionMixin, Base):
     ISOCAT_counterpart = Column(Unicode)
     ISOCAT_URL = Column(Unicode)
     ISOCAT_comments = Column(Unicode)
+
+    @property
+    def parents(self):
+        return [assoc.parent for assoc in self.parent_assocs]
+
+    @property
+    def children(self):
+        return [assoc.child for assoc in self.child_assocs]
+
+
+class ConceptRelation(Base):
+    # FIXME: add a unique constraint!
+    parent_pk = Column(Integer, ForeignKey('concept.pk'))
+    child_pk = Column(Integer, ForeignKey('concept.pk'))
+
+    parent = relationship(Concept, foreign_keys=[parent_pk], backref='child_assocs')
+    child = relationship(Concept, foreign_keys=[child_pk], backref='parent_assocs')
 
 
 @implementer(interfaces.IValue)
