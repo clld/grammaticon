@@ -28,7 +28,7 @@ class Concept(IdNameDescriptionMixin, Base):
     comments = Column(Unicode)
     GOLD_counterpart = Column(Unicode)
     GOLD_URL = Column(Unicode)
-    GOLD_comments = Column(Unicode)
+    GOLD_comment = Column(Unicode)
     ISOCAT_counterpart = Column(Unicode)
     ISOCAT_URL = Column(Unicode)
     ISOCAT_comments = Column(Unicode)

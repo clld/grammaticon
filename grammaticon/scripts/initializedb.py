@@ -4,12 +4,18 @@ import sys
 from clld.scripts.util import initializedb, Data
 from clld.db.meta import DBSession
 from clld.db.models import common
-from clldutils.dsv import reader
+from clldutils.dsv import reader as basereader
 from clldutils.misc import slug
 from nameparser import HumanName
 
+
 import grammaticon
 from grammaticon import models
+
+
+def reader(*args, **kw):
+    kw['encoding'] = 'latin1'
+    return basereader(*args, **kw)
 
 
 def get_contributor(data, name):
@@ -80,13 +86,13 @@ def main(args):
             id=obj.pop('id'), name=obj.pop('label'), description=obj.pop('definition'),
             **{k.replace(' ', '_'): v for k, v in obj.items()})
 
-    for obj in reader(args.data_file('x_Concepts_Metafeatures.csv'), dicts=True):
+    for obj in reader(args.data_file('Concepts_metafeatures.csv'), dicts=True):
         if obj['concept_id'] and obj['meta_feature__id']:
             models.ConceptMetafeature(
                 concept=data['Concept'][obj['concept_id']],
                 metafeature=data['Metafeature'][obj['meta_feature__id']])
 
-    for obj in reader(args.data_file('x_Concepthierarchy.csv'), dicts=True):
+    for obj in reader(args.data_file('Concepthierarchy.csv'), dicts=True):
         child = data['Concept'].get(obj['concept_id'])
         if child:
             parent = data['Concept'].get(obj['concept_parent_id'])
