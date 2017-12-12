@@ -8,19 +8,19 @@
 <p>
     ${ctx.description}
 </p>
-<dt>
-    % for o in ['GOLD', 'ISOCAT']:
+<dl>
+    % for o, c in [('GOLD', '_comment'), ('ISOCAT', '_comments')]:
         % if getattr(ctx, o + '_counterpart'):
             <dt>${o}</dt>
             <dd>
                 ${h.external_link(getattr(ctx, o + '_URL'), label=getattr(ctx, o + '_counterpart'))}
-                % if getattr(ctx, o + '_comments'):
-                    (${getattr(ctx, o + '_comments')})
+                % if getattr(ctx, o + c):
+                    (${getattr(ctx, o + c)})
                 % endif
             </dd>
         % endif
     % endfor
-</dt>
+</dl>
 
 % if ctx.metafeature_assocs:
     <h4>Related metafeatures:</h4>
