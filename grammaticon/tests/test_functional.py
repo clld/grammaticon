@@ -1,12 +1,12 @@
-from clldutils.path import Path
-from clld.tests.util import TestWithApp
+from __future__ import print_function, unicode_literals
 
-import grammaticon
+import pytest
 
 
-class Tests(TestWithApp):
-    __cfg__ = Path(grammaticon.__file__).parent.joinpath('..', 'development.ini').resolve()
-    __setup_db__ = False
-
-    def test_home(self):
-        res = self.app.get('/', status=200)
+@pytest.mark.parametrize(
+    "method,path",
+    [
+        ('get_html', '/'),
+    ])
+def test_pages(app, method, path):
+    getattr(app, method)(path)
