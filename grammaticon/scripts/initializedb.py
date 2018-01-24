@@ -105,6 +105,12 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+    for param in DBSession.query(models.Metafeature):
+        param.representation = len(set(a.contribution_pk for a in param.valuesets))
+
+    for concept in DBSession.query(models.Concept):
+        concept.in_degree = len(concept.parents)
+        concept.out_degree = len(concept.children)
 
 
 if __name__ == '__main__':

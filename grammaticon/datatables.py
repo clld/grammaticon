@@ -1,9 +1,11 @@
-from sqlalchemy.orm import joinedload, aliased
+from sqlalchemy.orm import joinedload
 
 from clld.db.models.common import ValueSet, Value, Parameter, Contribution
 from clld.web.datatables.base import DataTable, Col, LinkCol
 from clld.web.datatables.parameter import Parameters
 from clld.web.datatables.value import Values
+
+from grammaticon import models
 
 
 class Concepts(DataTable):
@@ -13,6 +15,8 @@ class Concepts(DataTable):
             Col(self, 'description', sTitle='definition'),
             Col(self, 'GOLD_counterpart'),
             Col(self, 'ISOCAT_counterpart'),
+            Col(self, 'defined by', model_col=models.Concept.in_degree),
+            Col(self, 'defining', model_col=models.Concept.out_degree),
         ]
 
 
@@ -20,6 +24,7 @@ class Metafeatures(Parameters):
     def col_defs(self):
         return [
             LinkCol(self, 'name'),
+            Col(self, '# of feature lists', model_col=models.Metafeature.representation),
             Col(self, 'area'),
         ]
 

@@ -2,14 +2,9 @@ from setuptools import setup, find_packages
 
 
 requires = [
-    'clldmpg>=1.1.0',
+    'clldmpg~=3.1',
     'markdown',
     'waitress'
-]
-
-tests_require = [
-    'WebTest >= 1.3.1',  # py3 compat
-    'mock==1.0.0',
 ]
 
 
@@ -46,7 +41,6 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
-    tests_require=tests_require,
     test_suite="grammaticon",
     entry_points="""\
 [paste.app_factory]

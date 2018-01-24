@@ -32,6 +32,8 @@ class Concept(IdNameDescriptionMixin, Base):
     ISOCAT_counterpart = Column(Unicode)
     ISOCAT_URL = Column(Unicode)
     ISOCAT_comments = Column(Unicode)
+    in_degree = Column(Integer, default=0)
+    out_degree = Column(Integer, default=0)
 
     @property
     def parents(self):
@@ -60,6 +62,7 @@ class Feature(CustomModelMixin, Value):
 class Metafeature(CustomModelMixin, Parameter):
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
     area = Column(Unicode)
+    representation = Column(Integer, default=0)
 
 
 @implementer(interfaces.IContribution)
