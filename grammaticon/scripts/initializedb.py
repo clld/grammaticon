@@ -1,5 +1,5 @@
-from __future__ import unicode_literals, print_function
 import sys
+import itertools
 
 from clld.scripts.util import initializedb, Data
 from clld.db.meta import DBSession
@@ -63,20 +63,35 @@ def main(args):
                     ord=i + 1)
 
     #id,name,feature_area
-    for obj in reader(args.data_file('Metafeatures.csv'), dicts=True):
-        data.add(
-            models.Metafeature, obj['id'],
-            id=slug(obj['id']), name=obj['name'], area=obj['feature_area'])
+    for name, objs in itertools.groupby(
+            sorted(reader(args.data_file('Metafeatures.csv'), dicts=True), key=lambda i: i['name']),
+            lambda i: i['name']):
+        dbobj = None
+        for obj in objs:
+            if not dbobj:
+                dbobj = data.add(
+                    models.Metafeature, obj['id'],
+                    id=slug(obj['id']), name=obj['name'], area=obj['feature_area'])
+            else:
+                data['Metafeature'][obj['id']] = dbobj
 
+    DBSession.flush()
     #feature_ID,feature name,feature description,meta_feature_id,collection_id,collection URL,collection numbers
     for obj in reader(args.data_file('Features.csv'), dicts=True):
-        if not obj['meta_feature_id']:
+        if int(obj['collection_id']) == 8:
+            obj['collection_id'] = '1'
+        if (not obj['meta_feature_id']) or obj['meta_feature_id'] in ('89'):
             print('skipping')
             continue
-        vs = common.ValueSet(
-            contribution=data['Featurelist'][obj['collection_id']],
-            parameter=data['Metafeature'][obj['meta_feature_id']],
-            language=eng)
+        vsid = (data['Featurelist'][obj['collection_id']].pk, data['Metafeature'][obj['meta_feature_id']].pk)
+        vs = data['ValueSet'].get(vsid)
+        if not vs:
+            vs = data.add(
+                common.ValueSet, vsid,
+                id='{0}-{1}'.format(*vsid),
+                contribution=data['Featurelist'][obj['collection_id']],
+                parameter=data['Metafeature'][obj['meta_feature_id']],
+                language=eng)
         models.Feature(
             valueset=vs, id=slug(obj['feature_ID']), name=obj['feature name'], description=obj['feature description'])
 
@@ -87,6 +102,9 @@ def main(args):
             **{k.replace(' ', '_'): v for k, v in obj.items()})
 
     for obj in reader(args.data_file('Concepts_metafeatures.csv'), dicts=True):
+        if obj['meta_feature__id'] in ('89'):
+            print('skipping')
+            continue
         if obj['concept_id'] and obj['meta_feature__id']:
             models.ConceptMetafeature(
                 concept=data['Concept'][obj['concept_id']],
