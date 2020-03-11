@@ -6,7 +6,7 @@ setup(
     description='grammaticon',
     long_description='',
     install_requires = [
-        'clld>=4.0',
+        'clld>=5.0',
         'clldmpg>=3.1.1',
         'markdown',
         'sqlalchemy',
