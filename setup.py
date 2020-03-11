@@ -7,7 +7,7 @@ setup(
     long_description='',
     install_requires = [
         'clld>=5.0',
-        'clldmpg>=3.1.1',
+        'clldmpg>=3.5',
         'markdown',
         'sqlalchemy',
         'waitress',
