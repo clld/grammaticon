@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 
+
 setup(
     name='grammaticon',
     version='0.0',
     description='grammaticon',
     long_description='',
     install_requires = [
-        'clld>=5.0',
+        'clld>=6.0',
         'clldmpg>=3.5',
         'markdown',
         'sqlalchemy',
@@ -20,7 +21,7 @@ setup(
         ],
         'test': [
             'mock',
-            'pytest>=3.1',
+            'pytest>=3.6',
             'pytest-clld',
             'pytest-mock',
             'pytest-cov',
