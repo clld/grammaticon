@@ -1,10 +1,10 @@
 import sys
 import itertools
 
-from clld.scripts.util import initializedb, Data
+from clld.cliutil import Data
 from clld.db.meta import DBSession
 from clld.db.models import common
-from clldutils.dsv import reader as basereader
+from csvw.dsv import reader as basereader
 from clldutils.misc import slug
 from nameparser import HumanName
 
@@ -29,6 +29,7 @@ def get_contributor(data, name):
 
 def main(args):
     data = Data()
+    print(args.data_file('x'))
 
     dataset = common.Dataset(
         id=grammaticon.__name__,
@@ -130,7 +131,3 @@ def prime_cache(args):
         concept.in_degree = len(concept.parents)
         concept.out_degree = len(concept.children)
 
-
-if __name__ == '__main__':
-    initializedb(create=main, prime_cache=prime_cache)
-    sys.exit(0)
