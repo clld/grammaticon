@@ -23,7 +23,7 @@ def relations(req):
         for node in [rel.parent, rel.child]:
             nodes[node.id] = dict(id=node.id, label=node.name, size=1)
 
-    for node, (x, y) in zip(nodes.values(), product(range(10), range(10))):
+    for node, (x, y) in zip(nodes.values(), product(range(15), range(15))):
         node['x'], node['y'] = x, y
         res['nodes'].append(node)
 

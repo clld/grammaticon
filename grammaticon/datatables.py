@@ -1,6 +1,7 @@
 from sqlalchemy.orm import joinedload
 
 from clld.db.models.common import ValueSet, Value, Parameter, Contribution
+from clld.db.util import get_distinct_values
 from clld.web.datatables.base import DataTable, Col, LinkCol
 from clld.web.datatables.parameter import Parameters
 from clld.web.datatables.value import Values
@@ -57,6 +58,7 @@ class Features(Values):
                 self,
                 'featurelist',
                 model_col=Contribution.name,
+                choices=get_distinct_values(Contribution.name),
                 get_object=lambda o: o.valueset.contribution))
         if not self.parameter:
             res.append(LinkCol(

@@ -81,8 +81,8 @@ def main(args):
     for obj in reader(args.data_file('Features.csv'), dicts=True):
         if int(obj['collection_id']) == 8:
             obj['collection_id'] = '1'
-        if (not obj['meta_feature_id']) or obj['meta_feature_id'] in ('89'):
-            print('skipping')
+        if (not obj['meta_feature_id']):  #or obj['meta_feature_id'] in ('89'):
+            print('skipping: {}'.format(obj))
             continue
         vsid = (data['Featurelist'][obj['collection_id']].pk, data['Metafeature'][obj['meta_feature_id']].pk)
         vs = data['ValueSet'].get(vsid)
@@ -103,8 +103,8 @@ def main(args):
             **{k.replace(' ', '_'): v for k, v in obj.items()})
 
     for obj in reader(args.data_file('Concepts_metafeatures.csv'), dicts=True):
-        if obj['meta_feature__id'] in ('89'):
-            print('skipping')
+        if obj['meta_feature__id'] in ('89',):
+            print('skipping: {}'.format(obj))
             continue
         if obj['concept_id'] and obj['meta_feature__id']:
             models.ConceptMetafeature(
