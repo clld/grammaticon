@@ -66,12 +66,11 @@ class Metafeature(CustomModelMixin, Parameter):
 
 
 @implementer(interfaces.IContribution)
-class Featurelist(CustomModelMixin, Contribution):
+class FeatureList(CustomModelMixin, Contribution):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     year = Column(Unicode)
     url = Column(Unicode)
     number_of_features = Column(Integer)
-    #id,name,URL,authors,number of features,year
 
 
 class ConceptMetafeature(Base):
