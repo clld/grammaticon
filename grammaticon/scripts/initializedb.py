@@ -111,12 +111,9 @@ def iter_features(csv_features, valuesets):
     return (
         models.Feature(
             id=slug(feature['ID']),
-            name=feature['Name'],
-            description=feature['Description'],
-            valueset_pk=valuesets[
-                feature['Feature_List_ID'],
-                feature['Metafeature_ID']
-            ].pk)
+            name=feature.get('Name') or feature['ID'],
+            description=feature.get('Description'),
+            valueset_pk=valuesets[feature['Feature_List_ID'], feature['Metafeature_ID']].pk)
         for feature in csv_features)
 
 
@@ -127,13 +124,10 @@ def make_concepts(csv_concepts):
             name=concept['Name'],
             description=concept.get('Description'),
             comments=concept.get('Comment'),
-            quotation=concept.get('Quotation'),
-            GOLD_counterpart=concept.get('GOLD_Counterpart'),
-            GOLD_URL=concept.get('GOLD_URL'),
-            GOLD_comment=concept.get('GOLD_Comment'),
-            ISOCAT_counterpart=concept.get('ISOCAT_Counterpart'),
-            ISOCAT_URL=concept.get('ISOCAT_URL'),
-            ISOCAT_comments=concept.get('ISOCAT_Comment'))
+            Wikipedia_counterpart=concept.get('Wikipedia_counterpart'),
+            Wikipedia_URL=concept.get('Wikipedia_URL'),
+            SIL_counterpart=concept.get('SIL_counterpart'),
+            SIL_URL=concept.get('SIL_URL'))
         for concept in csv_concepts}
 
 

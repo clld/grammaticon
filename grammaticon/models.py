@@ -24,14 +24,11 @@ from grammaticon.interfaces import IConcept
 @implementer(IConcept)
 class Concept(IdNameDescriptionMixin, Base):
     pk = Column(Integer, primary_key=True)
-    quotation = Column(Unicode)
     comments = Column(Unicode)
-    GOLD_counterpart = Column(Unicode)
-    GOLD_URL = Column(Unicode)
-    GOLD_comment = Column(Unicode)
-    ISOCAT_counterpart = Column(Unicode)
-    ISOCAT_URL = Column(Unicode)
-    ISOCAT_comments = Column(Unicode)
+    Wikipedia_counterpart = Column(Unicode)
+    Wikipedia_URL = Column(Unicode)
+    SIL_counterpart = Column(Unicode)
+    SIL_URL = Column(Unicode)
     in_degree = Column(Integer, default=0)
     out_degree = Column(Integer, default=0)
 

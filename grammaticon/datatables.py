@@ -14,8 +14,8 @@ class Concepts(DataTable):
         return [
             LinkCol(self, 'name'),
             Col(self, 'description', sTitle='definition'),
-            Col(self, 'GOLD_counterpart'),
-            Col(self, 'ISOCAT_counterpart'),
+            Col(self, 'Wikipedia_counterpart'),
+            Col(self, 'SIL_counterpart'),
             Col(self, 'defined by', model_col=models.Concept.in_degree),
             Col(self, 'defining', model_col=models.Concept.out_degree),
         ]
