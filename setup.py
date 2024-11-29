@@ -11,7 +11,7 @@ setup(
         'clld>=9.2.1',
         'clldmpg>=4.2',
         'markdown',
-        'sqlalchemy',
+        'sqlalchemy<2.0',
         'waitress',
     ],
     extras_require={
