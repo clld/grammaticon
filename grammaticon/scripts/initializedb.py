@@ -127,10 +127,12 @@ def make_concepts(csv_concepts):
             name=concept['Name'],
             description=concept.get('Description'),
             comments=concept.get('Comment'),
-            Wikipedia_counterpart=concept.get('Wikipedia_counterpart'),
-            Wikipedia_URL=concept.get('Wikipedia_URL'),
-            SIL_counterpart=concept.get('SIL_counterpart'),
-            SIL_URL=concept.get('SIL_URL'))
+            wikipedia_counterpart=concept.get('Wikipedia_Counterpart'),
+            wikipedia_url=concept.get('Wikipedia_URL'),
+            sil_counterpart=concept.get('SIL_Counterpart'),
+            sil_url=concept.get('SIL_URL'),
+            croft_counterpart=concept.get('Croft_counterpart'),
+            croft_definition=concept.get('Croft_definition'))
         for concept in csv_concepts}
 
 

@@ -5,19 +5,76 @@ from clld.db.util import get_distinct_values
 from clld.web.datatables.base import Col, DataTable, LinkCol
 from clld.web.datatables.parameter import Parameters
 from clld.web.datatables.value import Values
+from clld.web.util.helpers import link
+from clld.web.util.htmllib import HTML
 
 from grammaticon import models
+
+
+def _generate_separators(iterable):
+    first_item = True
+    for item in iterable:
+        if first_item:
+            first_item = False
+        else:
+            yield '; '
+        yield item
+
+
+def semicolon_separated_span(iterable):
+    return HTML.span(*_generate_separators(iterable))
+
+
+# TODO(johannes): un-dummy the columns and remove this
+class DummyCol(Col):
+    def format(*_args, **_kwargs):
+        return ''
+
+
+class FeatureConceptsCol(Col):
+    """Column listing concepts for a given feature."""
+
+    __kw__ = {'bSearchable': False, 'bSortable': False}
+
+    def format(self, item):
+        def _concept_label(c):
+            return c.name or c.id or str(c)
+
+        feature = self.get_obj(item)
+        unique_concepts = {
+            assoc.concept.pk: assoc.concept
+            for assoc in feature.valueset.parameter.concept_assocs}
+        concepts = sorted(unique_concepts.values(), key=_concept_label)
+        return semicolon_separated_span(
+            link(self.dt.req, concept, label=_concept_label(concept))
+            for concept in concepts)
+
+
+class Featurelists(DataTable):
+    def col_defs(self):
+        return [
+            LinkCol(self, 'name', sTitle='Database name'),
+            # TODO(johannes): add actual data
+            DummyCol(self, 'name', sTitle='Database reference'),
+            Col(self, 'description'),
+            # TODO(johannes): add actual data
+            DummyCol(self, 'name', sTitle='Languages'),
+            # TODO(johannes): add actual data
+            DummyCol(self, 'name', sTitle='Features'),
+        ]
 
 
 class Concepts(DataTable):
     def col_defs(self):
         return [
-            LinkCol(self, 'name'),
-            Col(self, 'description', sTitle='definition'),
-            Col(self, 'Wikipedia_counterpart'),
-            Col(self, 'SIL_counterpart'),
-            Col(self, 'defined by', model_col=models.Concept.in_degree),
-            Col(self, 'defining', model_col=models.Concept.out_degree),
+            LinkCol(self, 'name', sTitle='Concept Name'),
+            Col(self, 'description', sTitle='Definition'),
+            Col(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
+            Col(self, 'sil_counterpart', sTitle='SIL dictionary'),
+            Col(self, 'croft_counterpart', sTitle='Croft (2022)'),
+            Col(self, 'croft_definition'),
+            # Col(self, 'defined by', model_col=models.Concept.in_degree),
+            # Col(self, 'defining', model_col=models.Concept.out_degree),
         ]
 
 
@@ -32,44 +89,52 @@ class Metafeatures(Parameters):
 
 class Features(Values):
     def base_query(self, query):
-        query = query.join(Value.valueset).options(joinedload(Value.valueset))
+        query = query.join(ValueSet)
 
         if self.parameter:
-            return query.join(ValueSet.contribution)\
-                .filter(ValueSet.parameter_pk == self.parameter.pk)\
-                .options(joinedload(Value.valueset, ValueSet.contribution))
+            query = query.filter(
+                ValueSet.parameter_pk == self.parameter.pk)
+        else:
+            query = query.join(models.Metafeature)
 
         if self.contribution:
-            return query.join(ValueSet.parameter)\
-                .filter(ValueSet.contribution_pk == self.contribution.pk)\
-                .options(joinedload(Value.valueset, ValueSet.parameter))
+            query = query.filter(
+                ValueSet.contribution_pk == self.contribution.pk)
+        else:
+            query = query.join(models.FeatureList)
 
-        return query.join(ValueSet.parameter).join(ValueSet.contribution)\
-            .options(
-                joinedload(Value.valueset, ValueSet.contribution),
-                joinedload(Value.valueset, ValueSet.parameter))
+        query = query.options(
+            joinedload(models.Feature.valueset)
+            .joinedload(ValueSet.parameter)
+            .joinedload(models.Metafeature.concept_assocs)
+            .joinedload(models.ConceptMetafeature.concept))
+
+        return query
 
     def col_defs(self):
-        res = [
-            LinkCol(self, 'name'),
-        ]
-        if not self.contribution:
-            res.append(LinkCol(
-                self,
-                'featurelist',
-                model_col=Contribution.name,
-                choices=get_distinct_values(Contribution.name),
-                get_object=lambda o: o.valueset.contribution))
-        if not self.parameter:
-            res.append(LinkCol(
-                self,
-                'metafeature',
-                model_col=Parameter.name,
-                get_object=lambda o: o.valueset.parameter))
-        return res
+        name = LinkCol(self, 'name', sTitle='Feature name')
+        description = Col(self, 'description', sTitle='Feature description')
+        # TODO(johannes): fill with data
+        languages = DummyCol(self, 'name', sTitle='Languages')
+        contrib = LinkCol(
+            self,
+            'database',
+            model_col=Contribution.name,
+            choices=get_distinct_values(Contribution.name),
+            get_object=lambda o: o.valueset.contribution)
+        if self.contribution:
+            concepts = FeatureConceptsCol(self, 'concepts', sTitle='Grammatical concepts')
+            return [name, description, concepts, languages]
+        elif self.parameter:
+            concepts = FeatureConceptsCol(self, 'concepts', sTitle='Grammatical concepts')
+            return [name, description, concepts, languages]
+        else:
+            concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related concepts')
+            return [name, contrib, concepts]
 
 
 def includeme(config):
+    config.register_datatable('contributions', Featurelists)
     config.register_datatable('values', Features)
     config.register_datatable('parameters', Metafeatures)
     config.register_datatable('concepts', Concepts)

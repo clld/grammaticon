@@ -15,10 +15,12 @@ from grammaticon.interfaces import IConcept
 class Concept(IdNameDescriptionMixin, Base):
     pk = Column(Integer, primary_key=True)
     comments = Column(Unicode)
-    Wikipedia_counterpart = Column(Unicode)
-    Wikipedia_URL = Column(Unicode)
-    SIL_counterpart = Column(Unicode)
-    SIL_URL = Column(Unicode)
+    wikipedia_counterpart = Column(Unicode)
+    wikipedia_url = Column(Unicode)
+    sil_counterpart = Column(Unicode)
+    sil_url = Column(Unicode)
+    croft_counterpart = Column(Unicode)
+    croft_definition = Column(Unicode)
     in_degree = Column(Integer, default=0)
     out_degree = Column(Integer, default=0)
 

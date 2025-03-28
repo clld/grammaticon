@@ -2,49 +2,77 @@
 <%namespace name="util" file="../util.mako"/>
 <%! active_menu_item = "concepts" %>
 <%block name="title">Concept: ${ctx.name}</%block>
-
+<%! from clld.db.models import common %>
+<%! import grammaticon.models as m %>
 
 <h2>Concept: ${ctx.name}</h2>
-<p>
-    ${ctx.description}
-</p>
-<dl>
-    % for o, c in [('GOLD', '_comment'), ('ISOCAT', '_comments')]:
-        % if getattr(ctx, o + '_counterpart'):
-            <dt>${o}</dt>
-            <dd>
-                ${h.external_link(getattr(ctx, o + '_URL'), label=getattr(ctx, o + '_counterpart'))}
-                % if getattr(ctx, o + c):
-                    (${getattr(ctx, o + c)})
-                % endif
-            </dd>
-        % endif
-    % endfor
-</dl>
 
-% if ctx.metafeature_assocs:
-    <h4>Related metafeatures:</h4>
-    <ul>
-        % for ca in ctx.metafeature_assocs:
-            <li>${h.link(req, ca.metafeature)}</li>
-        % endfor
-    </ul>
+% if ctx.description:
+<p>
+  ${ctx.description}
+</p>
 % endif
 
 % if ctx.parents:
-    <h4>Defining concepts:</h4>
-    <ul>
-        % for c in ctx.parents:
-            <li>${h.link(req, c)}</li>
-        % endfor
-    </ul>
+<h4>Defining concepts:</h4>
+<ul>
+  % for c in ctx.parents:
+  <li>${h.link(req, c)}</li>
+  % endfor
+</ul>
 % endif
 
 % if ctx.children:
 <h4>Derived concepts:</h4>
 <ul>
-    % for c in ctx.children:
-        <li>${h.link(req, c)}</li>
-    % endfor
+  % for c in ctx.children:
+  <li>${h.link(req, c)}</li>
+  % endfor
+</ul>
+% endif
+
+% if ctx.wikipedia_counterpart or ctx.sil_counterpart or ctx.croft_counterpart:
+<dl>
+  % if ctx.wikipedia_counterpart:
+  <dt>Wikipedia:</dt>
+  %   if ctx.wikipedia_url:
+  <dd>${h.external_link(ctx.wikipedia_url, label=ctx.wikipedia_counterpart)}</dd>
+  %   else:
+  <dd>${ctx.wikipedia_counterpart}</dd>
+  %   endif
+  % endif
+  % if ctx.sil_counterpart:
+  <dt>SIL dictionary:</dt>
+  %   if ctx.sil_url:
+  <dd>${h.external_link(ctx.sil_url, label=ctx.sil_counterpart)}</dd>
+  %   else:
+  <dd>${ctx.sil_counterpart}</dd>
+  %   endif
+  % endif
+  % if ctx.croft_counterpart:
+  <dt>Croft (2022):</dt>
+  %   if ctx.croft_definition:
+  <dd><strong>${ctx.croft_counterpart}</strong>: ${ctx.croft_definition}</dd>
+  %   else:
+  <dd><strong>${ctx.croft_counterpart}</strong></dd>
+  %   endif
+  % endif
+</dl>
+% endif
+
+<%
+  features = list(request.db.query(m.Feature)
+    .join(common.ValueSet)
+    .join(m.Metafeature)
+    .join(m.ConceptMetafeature)
+    .filter(m.ConceptMetafeature.concept_pk == ctx.pk)
+    .distinct())
+%>
+% if features:
+<h4>Related features:</h4>
+<ul>
+  % for feature in features:
+  <li>${h.link(req, feature)}</li>
+  % endfor
 </ul>
 % endif
