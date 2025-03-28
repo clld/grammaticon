@@ -1,8 +1,8 @@
 from sqlalchemy.orm import joinedload
 
-from clld.db.models.common import ValueSet, Value, Parameter, Contribution
+from clld.db.models.common import Contribution, Parameter, Value, ValueSet
 from clld.db.util import get_distinct_values
-from clld.web.datatables.base import DataTable, Col, LinkCol
+from clld.web.datatables.base import Col, DataTable, LinkCol
 from clld.web.datatables.parameter import Parameters
 from clld.web.datatables.value import Values
 

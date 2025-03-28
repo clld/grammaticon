@@ -6,7 +6,7 @@ setup(
     version='0.0',
     description='grammaticon',
     long_description='',
-    install_requires = [
+    install_requires=[
         'csvw',
         'clld>=9.2.1',
         'clldmpg>=4.2',
