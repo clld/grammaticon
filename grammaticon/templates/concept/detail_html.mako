@@ -7,32 +7,64 @@
 
 <h2>Concept: ${ctx.name}</h2>
 
+<%def name="sidebar()">
+  <div class="well">
+    % if ctx.parents:
+    <h4>Defining concepts:</h4>
+    <ul>
+      % for c in ctx.parents:
+      <li>${h.link(req, c)}</li>
+      % endfor
+    </ul>
+    % endif
+
+    % if ctx.children:
+    <h4>Derived concepts:</h4>
+    <ul>
+      % for c in ctx.children:
+      <li>${h.link(req, c)}</li>
+      % endfor
+    </ul>
+    % endif
+    <%
+      features = list(request.db.query(m.Feature)
+        .join(common.ValueSet)
+        .join(m.Metafeature)
+        .join(m.ConceptMetafeature)
+        .filter(m.ConceptMetafeature.concept_pk == ctx.pk)
+        .distinct())
+    %>
+    % if features:
+    <h4>Related features:</h4>
+    <ul>
+      % for feature in features:
+      <li>${h.link(req, feature)}</li>
+      % endfor
+    </ul>
+    % endif
+  </div>
+</%def>
+
 % if ctx.description:
 <p>
   ${ctx.description}
 </p>
 % endif
 
-% if ctx.parents:
-<h4>Defining concepts:</h4>
-<ul>
-  % for c in ctx.parents:
-  <li>${h.link(req, c)}</li>
-  % endfor
-</ul>
-% endif
-
-% if ctx.children:
-<h4>Derived concepts:</h4>
-<ul>
-  % for c in ctx.children:
-  <li>${h.link(req, c)}</li>
-  % endfor
-</ul>
-% endif
-
-% if ctx.wikipedia_counterpart or ctx.sil_counterpart or ctx.croft_counterpart:
+% if ctx.comments or ctx.wikipedia_counterpart or ctx.sil_counterpart or ctx.croft_counterpart:
 <dl>
+  % if ctx.comments:
+  <dt>Comments:</dt>
+  <dd>${ctx.comments}</dd>
+  % endif
+  % if ctx.croft_counterpart:
+  <dt>Croft (2022):</dt>
+  %   if ctx.croft_definition:
+  <dd><strong>${ctx.croft_counterpart}</strong>: ${ctx.croft_definition}</dd>
+  %   else:
+  <dd><strong>${ctx.croft_counterpart}</strong></dd>
+  %   endif
+  % endif
   % if ctx.wikipedia_counterpart:
   <dt>Wikipedia:</dt>
   %   if ctx.wikipedia_url:
@@ -49,30 +81,5 @@
   <dd>${ctx.sil_counterpart}</dd>
   %   endif
   % endif
-  % if ctx.croft_counterpart:
-  <dt>Croft (2022):</dt>
-  %   if ctx.croft_definition:
-  <dd><strong>${ctx.croft_counterpart}</strong>: ${ctx.croft_definition}</dd>
-  %   else:
-  <dd><strong>${ctx.croft_counterpart}</strong></dd>
-  %   endif
-  % endif
 </dl>
-% endif
-
-<%
-  features = list(request.db.query(m.Feature)
-    .join(common.ValueSet)
-    .join(m.Metafeature)
-    .join(m.ConceptMetafeature)
-    .filter(m.ConceptMetafeature.concept_pk == ctx.pk)
-    .distinct())
-%>
-% if features:
-<h4>Related features:</h4>
-<ul>
-  % for feature in features:
-  <li>${h.link(req, feature)}</li>
-  % endfor
-</ul>
 % endif
