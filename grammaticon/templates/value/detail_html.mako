@@ -12,4 +12,6 @@
 
 
 <h2>Feature: ${ctx.name}</h2>
+%if ctx.description:
 <div>${u.md(ctx.description)|n}</div>
+%endif
