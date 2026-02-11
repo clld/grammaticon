@@ -8,7 +8,7 @@ setup(
     long_description='',
     install_requires=[
         'csvw',
-        'clld>=9.2.1',
+        'clld>=11.5.1',
         'clldmpg>=4.2',
         'markdown',
         'sqlalchemy<2.0',
