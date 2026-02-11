@@ -5,7 +5,7 @@ from clld.db.util import get_distinct_values
 from clld.web.datatables.base import Col, DataTable, LinkCol
 from clld.web.datatables.parameter import Parameters
 from clld.web.datatables.value import Values
-from clld.web.util.helpers import link
+from clld.web.util.helpers import link, external_link
 from clld.web.util.htmllib import HTML
 
 from grammaticon import models
@@ -50,18 +50,40 @@ class FeatureConceptsCol(Col):
             for concept in concepts)
 
 
+class ContributionCol(Col):
+    def format(self, item):
+        return link(self.dt.req, item, label=f'{item.name} features')
+
+
 class Featurelists(DataTable):
     def col_defs(self):
         return [
-            LinkCol(self, 'name', sTitle='Database name'),
+            Col(self, 'name', sTitle='Database name'),
+            ContributionCol(
+                self, 'name', sTitle='Database features',
+                model_col=Contribution.name),
             # TODO(johannes): add actual data
             DummyCol(self, 'name', sTitle='Database reference'),
             Col(self, 'description'),
             # TODO(johannes): add actual data
             DummyCol(self, 'name', sTitle='Languages'),
-            # TODO(johannes): add actual data
-            DummyCol(self, 'name', sTitle='Features'),
         ]
+
+
+class SILLinkCol(Col):
+    def format(self, item):
+        if item.sil_url:
+            return external_link(item.sil_url, label=item.sil_counterpart)
+        else:
+            return item.sil_counterpart
+
+
+class WikiLinkCol(Col):
+    def format(self, item):
+        if item.wikipedia_url:
+            return external_link(item.wikipedia_url, label=item.wikipedia_counterpart)
+        else:
+            return item.wikipedia_counterpart
 
 
 class Concepts(DataTable):
@@ -70,9 +92,15 @@ class Concepts(DataTable):
             LinkCol(self, 'name', sTitle='Concept Name'),
             Col(self, 'description', sTitle='Definition'),
             Col(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
-            Col(self, 'sil_counterpart', sTitle='SIL dictionary'),
+            SILLinkCol(self, 'sil_counterpart', sTitle='SIL dictionary'),
             Col(self, 'croft_counterpart', sTitle='Croft (2022)'),
             Col(self, 'croft_definition'),
+            Col(self,
+                'number_of_features',
+                sClass='right',
+                bSearchable=False,
+                input_size='mini',
+                model_col=models.Concept.number_of_features),
             # Col(self, 'defined by', model_col=models.Concept.in_degree),
             # Col(self, 'defining', model_col=models.Concept.out_degree),
         ]

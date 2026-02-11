@@ -23,6 +23,7 @@ class Concept(IdNameDescriptionMixin, Base):
     croft_definition = Column(Unicode)
     in_degree = Column(Integer, default=0)
     out_degree = Column(Integer, default=0)
+    number_of_features = Column(Integer, default=0)
 
     @property
     def parents(self):

@@ -1,4 +1,5 @@
 import unicodedata
+from collections import Counter
 from itertools import islice
 from pathlib import Path
 
@@ -120,7 +121,14 @@ def iter_features(csv_features, valuesets):
         for feature in csv_features)
 
 
-def make_concepts(csv_concepts):
+def make_concepts(csv_concepts, csv_features, csv_concept_metafeatures):
+    metafeature_features = Counter(f['Metafeature_ID'] for f in csv_features)
+    concept_features = {}
+    for assoc in csv_concept_metafeatures:
+        concept_id = assoc['Concept_ID']
+        metafeature_id = assoc['Metafeature_ID']
+        count = concept_features.get(concept_id) or 0
+        concept_features[concept_id] = count + metafeature_features[metafeature_id]
     return {
         concept['ID']: models.Concept(
             id=concept['ID'],
@@ -132,7 +140,8 @@ def make_concepts(csv_concepts):
             sil_counterpart=concept.get('SIL_Counterpart'),
             sil_url=concept.get('SIL_URL'),
             croft_counterpart=concept.get('Croft_counterpart'),
-            croft_definition=concept.get('Croft_definition'))
+            croft_definition=concept.get('Croft_definition'),
+            number_of_features=concept_features.get(concept['ID']))
         for concept in csv_concepts}
 
 
@@ -212,7 +221,7 @@ def main(_args):
     """))
     DBSession.add_all(metafeatures.values())
 
-    concepts = make_concepts(csv_concepts)
+    concepts = make_concepts(csv_concepts, csv_features, csv_concept_metafeatures)
     DBSession.add_all(concepts.values())
 
     dummy_language = common.Language(name='English')
