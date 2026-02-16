@@ -62,11 +62,16 @@ class Featurelists(DataTable):
             ContributionCol(
                 self, 'name', sTitle='Database features',
                 model_col=Contribution.name),
-            # TODO(johannes): add actual data
-            DummyCol(self, 'name', sTitle='Database reference'),
-            Col(self, 'description'),
-            # TODO(johannes): add actual data
-            DummyCol(self, 'name', sTitle='Languages'),
+            Col(self, 'url', sTitle='URL',
+                model_col=models.FeatureList.url),
+            Col(self, 'description', model_col=models.FeatureList.description),
+            Col(self,
+                'number_of_features',
+                sClass='right',
+                bSearchable=False,
+                input_size='mini',
+                sTitle='#&nbsp;Features',
+                model_col=models.FeatureList.number_of_features),
         ]
 
 

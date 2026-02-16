@@ -74,20 +74,14 @@ def iter_contribution_contributors(
         for list_id, number, author_id in list_authors)
 
 
-def maybe_int(s):
-    if s is None:
-        return None
-    else:
-        return int(s)
-
-
-def make_featurelists(csv_feature_lists):
+def make_featurelists(csv_feature_lists, csv_features):
+    featurelist_features = Counter(f['Feature_List_ID'] for f in csv_features)
     return {
         ls['ID']: models.FeatureList(
             id=slug(ls['Name']),
             name=ls['Name'],
             url=ls.get('URL'),
-            number_of_features=maybe_int(ls.get('Number_of_Features')),
+            number_of_features=featurelist_features[ls['ID']],
             year=ls.get('Year'))
         for ls in csv_feature_lists}
 
@@ -315,7 +309,7 @@ def main(_args):
     contributors = make_contributors(csv_feature_lists)
     DBSession.add_all(contributors.values())
 
-    feature_lists = make_featurelists(csv_feature_lists)
+    feature_lists = make_featurelists(csv_feature_lists, csv_features)
     DBSession.add_all(feature_lists.values())
 
     metafeatures = make_metafeatures(csv_metafeatures)

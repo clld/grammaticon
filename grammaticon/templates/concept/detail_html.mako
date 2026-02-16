@@ -41,9 +41,9 @@
       % for feature in features:
       <li>
         ${h.link(req, feature)}
-        %if feature.valueset.contribution:
+        % if feature.valueset.contribution:
         (${h.link(req, feature.valueset.contribution)})
-        %endif
+        % endif
       </li>
       % endfor
     </ul>
