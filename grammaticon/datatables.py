@@ -94,11 +94,11 @@ class WikiLinkCol(Col):
 class Concepts(DataTable):
     def col_defs(self):
         return [
-            LinkCol(self, 'name', sTitle='Concept Name'),
+            LinkCol(self, 'name', sTitle='Concept name'),
             Col(self, 'description', sTitle='Definition'),
             WikiLinkCol(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
             SILLinkCol(self, 'sil_counterpart', sTitle='SIL dictionary'),
-            Col(self, 'croft_definition', sTitle='Croft (2022) Defintition'),
+            Col(self, 'croft_definition', sTitle='Croft (2022) defintition'),
             Col(self,
                 'number_of_features',
                 sClass='right',
