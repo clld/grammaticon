@@ -29,7 +29,7 @@
     <%
       features = list(request.db.query(m.Feature)
         .join(common.ValueSet)
-        .join(common.Contribution)
+        .outerjoin(common.Contribution)
         .join(m.Metafeature)
         .join(m.ConceptMetafeature)
         .filter(m.ConceptMetafeature.concept_pk == ctx.pk)
@@ -39,7 +39,12 @@
     <h4>Related features:</h4>
     <ul>
       % for feature in features:
-      <li>${h.link(req, feature)} (${h.link(req, feature.valueset.contribution)})</li>
+      <li>
+        ${h.link(req, feature)}
+        %if feature.valueset.contribution:
+        (${h.link(req, feature.valueset.contribution)})
+        %endif
+      </li>
       % endfor
     </ul>
     % endif
