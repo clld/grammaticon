@@ -58,9 +58,9 @@ class ContributionCol(Col):
 class Featurelists(DataTable):
     def col_defs(self):
         return [
-            Col(self, 'name', sTitle='Database name'),
+            Col(self, 'name', sTitle='Dataset name'),
             ContributionCol(
-                self, 'name', sTitle='Database features',
+                self, 'name', sTitle='Dataset features',
                 model_col=Contribution.name),
             Col(self, 'url', sTitle='URL',
                 model_col=models.FeatureList.url),
