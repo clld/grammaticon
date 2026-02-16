@@ -91,7 +91,7 @@ class Concepts(DataTable):
         return [
             LinkCol(self, 'name', sTitle='Concept Name'),
             Col(self, 'description', sTitle='Definition'),
-            Col(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
+            WikiLinkCol(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
             SILLinkCol(self, 'sil_counterpart', sTitle='SIL dictionary'),
             Col(self, 'croft_definition', sTitle='Croft (2022) Defintition'),
             Col(self,
