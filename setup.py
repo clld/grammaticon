@@ -8,6 +8,7 @@ setup(
     long_description='',
     install_requires=[
         'csvw',
+        'simplepybtex',
         'clld>=11.5.1',
         'clldmpg>=4.2',
         'markdown',

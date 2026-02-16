@@ -1,3 +1,4 @@
+import re
 import unicodedata
 from collections import Counter
 from itertools import islice
@@ -6,9 +7,12 @@ from pathlib import Path
 import sqlalchemy
 from nameparser import HumanName
 
-from csvw import dsv
+from clld.cliutil import bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
+from clld.lib import bibtex
+from csvw import dsv
+from simplepybtex.database import parse_file
 
 import grammaticon
 from grammaticon import models
@@ -141,8 +145,18 @@ def make_concepts(csv_concepts, csv_features, csv_concept_metafeatures):
             sil_url=concept.get('SIL_URL'),
             croft_counterpart=concept.get('Croft_counterpart'),
             croft_definition=concept.get('Croft_definition'),
+            quotation=concept.get('Quotation'),
             number_of_features=concept_features.get(concept['ID']))
         for concept in csv_concepts}
+
+
+def make_sources(bibtex_sources):
+    sources = {}
+    for record in bibtex_sources.entries.values():
+        bibrecord = bibtex.Record(record.type, record.key, **record.fields)
+        source = bibtex2source(bibrecord, common.Source)
+        sources[record.key.lower()] = source
+    return sources
 
 
 def iter_concept_metafeatures(
@@ -161,6 +175,20 @@ def iter_concept_relations(csv_concept_pairs, concepts):
             child_pk=concepts[child].pk,
             parent_pk=concepts[parent].pk)
         for child, parent in csv_concept_pairs)
+
+
+def iter_concept_references(csv_concepts, concepts, sources):
+    for csv_concept in csv_concepts:
+        if (source_str := csv_concept.get('Source')):
+            for ref in re.split(r'\s*;\s*', source_str):
+                source_id, context = re.fullmatch(
+                    r'\s*([^]]+)(?:\[([^]]*)\])?\s*', ref).groups()
+                if (source := sources.get(source_id.lower())):
+                    yield models.ConceptReference(
+                        concept_pk=concepts[csv_concept['ID']].pk,
+                        source_pk=source.pk,
+                        key=source_id,
+                        description=context)
 
 
 def main(_args):
@@ -192,6 +220,7 @@ def main(_args):
     csv_concept_hierarchy = list(drop_column_header(
         dsv.reader(csvw_folder / 'concept-hierarchy.csv'),
         ['Child_ID', 'Parent_ID']))
+    bibtex_sources = parse_file(str(csvw_folder / 'sources.bib'))
 
     # fill data base
 
@@ -224,6 +253,9 @@ def main(_args):
     concepts = make_concepts(csv_concepts, csv_features, csv_concept_metafeatures)
     DBSession.add_all(concepts.values())
 
+    sources = make_sources(bibtex_sources)
+    DBSession.add_all(sources.values())
+
     dummy_language = common.Language(name='English')
     DBSession.add(dummy_language)
 
@@ -242,6 +274,7 @@ def main(_args):
     DBSession.add_all(iter_concept_metafeatures(
         csv_concept_metafeatures, concepts, metafeatures))
     DBSession.add_all(iter_concept_relations(csv_concept_hierarchy, concepts))
+    DBSession.add_all(iter_concept_references(csv_concepts, concepts, sources))
 
     valuesets = make_valuesets(
         csv_features, feature_lists, metafeatures, dummy_language)

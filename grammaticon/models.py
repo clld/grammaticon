@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
+from clld.db.models.source import HasSourceNotNullMixin
 from clld.db.models.common import (
     Contribution, IdNameDescriptionMixin, Parameter, Value,
 )
@@ -21,6 +22,7 @@ class Concept(IdNameDescriptionMixin, Base):
     sil_url = Column(Unicode)
     croft_counterpart = Column(Unicode)
     croft_definition = Column(Unicode)
+    quotation = Column(Unicode)
     in_degree = Column(Integer, default=0)
     out_degree = Column(Integer, default=0)
     number_of_features = Column(Integer, default=0)
@@ -41,6 +43,11 @@ class ConceptRelation(Base):
 
     parent = relationship(Concept, foreign_keys=[parent_pk], backref='child_assocs')
     child = relationship(Concept, foreign_keys=[child_pk], backref='parent_assocs')
+
+
+class ConceptReference(Base, HasSourceNotNullMixin):
+    concept_pk = Column(Integer, ForeignKey('concept.pk'), nullable=False)
+    concept = relationship(Concept, innerjoin=True, backref='references')
 
 
 @implementer(interfaces.IValue)
