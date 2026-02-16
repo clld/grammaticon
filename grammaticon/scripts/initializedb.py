@@ -7,10 +7,9 @@ from pathlib import Path
 import sqlalchemy
 from nameparser import HumanName
 
-from clld.cliutil import bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
-from clld.lib import bibtex
+from clld.lib.bibtex import EntryType
 from csvw import dsv
 from simplepybtex.database import parse_file
 
@@ -153,9 +152,85 @@ def make_concepts(csv_concepts, csv_features, csv_concept_metafeatures):
 def make_sources(bibtex_sources):
     sources = {}
     for record in bibtex_sources.entries.values():
-        bibrecord = bibtex.Record(record.type, record.key, **record.fields)
-        source = bibtex2source(bibrecord, common.Source)
-        sources[record.key.lower()] = source
+        authors = record.persons.get('author')
+        author = ' and '.join(map(str, authors)) if authors else None
+        editors = record.persons.get('editor')
+        editor = ' and '.join(map(str, editors)) if editors else None
+
+        # I don't like mutating the function parameters
+        fields = {k.lower(): v for k, v in record.fields.items()}
+
+        id_ = record.key
+        bibtex_type = EntryType.from_string(record.type)
+        year = record.fields.pop('year', None)
+        title = record.fields.pop('title', None)
+        type_ = record.fields.pop('type', None)
+        booktitle = record.fields.pop('booktitle', None)
+        pages = record.fields.pop('pages', None)
+        edition = record.fields.pop('edition', None)
+        journal = record.fields.pop('journal', None)
+        school = record.fields.pop('school', None)
+        address = record.fields.pop('address', None)
+        url = record.fields.pop('url', None)
+        note = record.fields.pop('note', None)
+        number = record.fields.pop('number', None)
+        series = record.fields.pop('series', None)
+        volume = record.fields.pop('volume', None)
+        publisher = record.fields.pop('publisher', None)
+        organisation = record.fields.pop('organization', None)
+        chapter = record.fields.pop('chapter', None)
+        howpublished = record.fields.pop('howpublished', None)
+
+        # dump the leftovers into jsondata
+        jsondata = fields
+
+        if (persons := authors or editors):
+            authoryear = '{} {}'.format(' '.join(persons[0].last_names), year)
+        else:
+            auhoryear = year
+        try:
+            year_int = int(year or '', 10)
+        except ValueError:
+            year_int = None
+        try:
+            startpage = pages.split('-', maxsplit=1)[0].strip() if pages else ''
+            startpage_int = int(startpage, 10)
+        except ValueError:
+            startpage_int = None
+        try:
+            pages_int = int(pages or '', 10)
+        except ValueError:
+            pages_int = None
+
+        sources[record.key.lower()] = common.Source(
+            id=id_,
+            name=authoryear,
+            bibtex_type=bibtex_type,
+            author=author,
+            editor=editor,
+            # explicitly drop falsey values like empty strings
+            year=year or 'nd',
+            title=title or None,
+            type=type_ or None,
+            booktitle=booktitle or None,
+            pages=pages or None,
+            edition=edition or None,
+            journal=journal or None,
+            school=school or None,
+            address=address or None,
+            url=url or None,
+            note=note or None,
+            number=number or None,
+            series=series or None,
+            volume=volume or None,
+            publisher=publisher or None,
+            organization=organisation or None,
+            chapter=chapter or None,
+            howpublished=howpublished or None,
+            year_int=year_int,
+            startpage_int=startpage_int,
+            pages_int=pages_int,
+            jsondata=jsondata)
     return sources
 
 

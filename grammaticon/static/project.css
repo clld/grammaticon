@@ -1,1 +1,3 @@
-
+dl.concept-properties dd + dt {
+    margin-top: 1em;
+}

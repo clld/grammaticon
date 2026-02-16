@@ -45,20 +45,19 @@
   </div>
 </%def>
 
-% if ctx.description:
-<p>
-  ${ctx.description}
-</p>
-% endif
 
-% if ctx.comments or ctx.wikipedia_counterpart or ctx.sil_counterpart or ctx.croft_counterpart:
-<dl>
+% if ctx.description or ctx.comments or ctx.wikipedia_counterpart or ctx.sil_counterpart or ctx.croft_counterpart or ctx.quotation or ctx.references:
+<dl class="concept-properties">
+  % if ctx.description:
+  <dt>Description</dt>
+  <dd>${ctx.description}</dd>
+  % endif
   % if ctx.comments:
-  <dt>Comments:</dt>
+  <dt>Comments</dt>
   <dd>${ctx.comments}</dd>
   % endif
   % if ctx.croft_counterpart:
-  <dt>Croft (2022):</dt>
+  <dt>Croft (2022)</dt>
   %   if ctx.croft_definition:
   <dd><strong>${ctx.croft_counterpart}</strong>: ${ctx.croft_definition}</dd>
   %   else:
@@ -66,7 +65,7 @@
   %   endif
   % endif
   % if ctx.wikipedia_counterpart:
-  <dt>Wikipedia:</dt>
+  <dt>Wikipedia</dt>
   %   if ctx.wikipedia_url:
   <dd>${h.external_link(ctx.wikipedia_url, label=ctx.wikipedia_counterpart)}</dd>
   %   else:
@@ -74,12 +73,20 @@
   %   endif
   % endif
   % if ctx.sil_counterpart:
-  <dt>SIL dictionary:</dt>
+  <dt>SIL dictionary</dt>
   %   if ctx.sil_url:
   <dd>${h.external_link(ctx.sil_url, label=ctx.sil_counterpart)}</dd>
   %   else:
   <dd>${ctx.sil_counterpart}</dd>
   %   endif
+  % endif
+  % if ctx.quotation:
+  <dt>Quotation</dt>
+  <dd>${ctx.quotation}</dd>
+  % endif
+  % if ctx.references:
+  <dt>Sources</dt>
+  <dd>${h.linked_references(request, ctx)|n}</dd>
   % endif
 </dl>
 % endif
