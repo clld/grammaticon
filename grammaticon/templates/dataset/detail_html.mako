@@ -28,6 +28,8 @@
 
 <h4><a href="${req.route_url('concepts')}">Concepts</a></h4>
 
+${request.route_url('relations')}
+
 <div id="container"> </div>
 
 <script>
@@ -84,18 +86,20 @@ sigma.parsers.json(
       s.startForceAtlas2();
       setTimeout(function() {s.killForceAtlas2();}, 1000);
       var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
-      dragListener.bind('startdrag', function(event) {
-        console.log(event);
-      });
-      dragListener.bind('drag', function(event) {
-        console.log(event);
-      });
-      dragListener.bind('drop', function(event) {
-        console.log(event);
-      });
-      dragListener.bind('dragend', function(event) {
-        console.log(event);
-      });
+
+      // // debug logging
+      // dragListener.bind('startdrag', function(event) {
+      //   console.log(event);
+      // });
+      // dragListener.bind('drag', function(event) {
+      //   console.log(event);
+      // });
+      // dragListener.bind('drop', function(event) {
+      //   console.log(event);
+      // });
+      // dragListener.bind('dragend', function(event) {
+      //   console.log(event);
+      // });
     }
 );
 </script>
