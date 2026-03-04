@@ -28,8 +28,6 @@
 
 <h4><a href="${req.route_url('concepts')}">Concepts</a></h4>
 
-${request.route_url('relations')}
-
 <div id="container"> </div>
 
 <script>
