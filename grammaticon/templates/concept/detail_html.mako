@@ -64,11 +64,12 @@
   % endif
   % if ctx.croft_counterpart:
   <dt>Croft (2022)</dt>
-  %   if ctx.croft_definition:
-  <dd><strong>${ctx.croft_counterpart}</strong>: ${ctx.croft_definition}</dd>
-  %   else:
-  <dd><strong>${ctx.croft_counterpart}</strong></dd>
-  %   endif
+  <dd>
+    <strong>${h.external_link(ctx.croft_url, label=ctx.croft_counterpart) if ctx.croft_url else ctx.croft_counterpart}</strong>${':' if ctx.croft_definition else ''}
+    % if ctx.croft_definition:
+    ${ctx.croft_definition}
+    % endif
+  </dd>
   % endif
   % if ctx.wikipedia_counterpart:
   <dt>Wikipedia</dt>

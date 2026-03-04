@@ -22,6 +22,7 @@ class Concept(IdNameDescriptionMixin, Base):
     sil_url = Column(Unicode)
     croft_counterpart = Column(Unicode)
     croft_definition = Column(Unicode)
+    croft_url = Column(Unicode)
     quotation = Column(Unicode)
     in_degree = Column(Integer, default=0)
     out_degree = Column(Integer, default=0)

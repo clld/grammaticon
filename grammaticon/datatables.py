@@ -98,7 +98,7 @@ class Concepts(DataTable):
             Col(self, 'description', sTitle='Definition'),
             WikiLinkCol(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
             SILLinkCol(self, 'sil_counterpart', sTitle='SIL dictionary'),
-            Col(self, 'croft_definition', sTitle='Croft (2022) defintition'),
+            Col(self, 'croft_definition', sTitle='Croft (2022) definition'),
             Col(self,
                 'number_of_features',
                 sClass='right',

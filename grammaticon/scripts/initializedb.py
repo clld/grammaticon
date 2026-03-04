@@ -138,6 +138,7 @@ def make_concepts(csv_concepts, csv_features, csv_concept_metafeatures):
             sil_url=concept.get('SIL_URL'),
             croft_counterpart=concept.get('Croft_counterpart'),
             croft_definition=concept.get('Croft_definition'),
+            croft_url=concept.get('Croft_URL'),
             quotation=concept.get('Quotation'),
             number_of_features=concept_features.get(concept['ID']))
         for concept in csv_concepts}
