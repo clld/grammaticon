@@ -5,11 +5,10 @@
 
 <%def name="sidebar()">
     <%util:well title="Featurelist">
-        ${h.link(req, ctx.valueset.contribution)}<br/>
-        by ${h.linked_contributors(req, ctx.valueset.contribution)}
+        ${h.link(req, ctx.contribution)}<br/>
+        by ${h.linked_contributors(req, ctx.contribution)}
     </%util:well>
 </%def>
-
 
 <h2>Feature: ${ctx.name}</h2>
 %if ctx.description:

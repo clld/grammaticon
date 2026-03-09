@@ -5,11 +5,9 @@ from sqlalchemy.orm import relationship
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
 from clld.db.models.source import HasSourceNotNullMixin
-from clld.db.models.common import (
-    Contribution, IdNameDescriptionMixin, Parameter, Value,
-)
+from clld.db.models.common import Contribution, IdNameDescriptionMixin
 
-from grammaticon.interfaces import IConcept
+from grammaticon.interfaces import IConcept, IFeature
 
 
 @implementer(IConcept)
@@ -51,16 +49,13 @@ class ConceptReference(Base, HasSourceNotNullMixin):
     concept = relationship(Concept, innerjoin=True, backref='references')
 
 
-@implementer(interfaces.IValue)
-class Feature(CustomModelMixin, Value):
-    pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
+@implementer(IFeature)
+class Feature(IdNameDescriptionMixin, Base):
+    contribution_pk = Column(Integer, ForeignKey('contribution.pk'))
+    contribution = relationship(Contribution, backref='features')
 
-
-@implementer(interfaces.IParameter)
-class Metafeature(CustomModelMixin, Parameter):
-    pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
-    area = Column(Unicode)
-    representation = Column(Integer, default=0)
+    feature_list_url = Column(Unicode)
+    feature_list_numbers = Column(Unicode)
 
 
 @implementer(interfaces.IContribution)
@@ -71,9 +66,9 @@ class FeatureList(CustomModelMixin, Contribution):
     number_of_features = Column(Integer)
 
 
-class ConceptMetafeature(Base):
+class ConceptFeature(Base):
     concept_pk = Column(Integer, ForeignKey('concept.pk'))
-    metafeature_pk = Column(Integer, ForeignKey('metafeature.pk'))
+    feature_pk = Column(Integer, ForeignKey('feature.pk'))
 
-    concept = relationship(Concept, backref='metafeature_assocs')
-    metafeature = relationship(Metafeature, backref='concept_assocs')
+    concept = relationship(Concept, backref='feature_assocs')
+    feature = relationship(Feature, backref='concept_assocs')

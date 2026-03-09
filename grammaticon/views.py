@@ -1,7 +1,6 @@
 from itertools import count, dropwhile, product
 
 from pyramid.view import view_config
-from sqlalchemy.orm import joinedload
 
 from clld.db.meta import DBSession
 
@@ -9,7 +8,7 @@ from grammaticon.models import Concept, ConceptRelation
 
 
 @view_config(route_name='relations', renderer='json')
-def relations(req):
+def relations(_req):
     nodes_by_pk = {
         concept.pk: {
             'id': concept.id,

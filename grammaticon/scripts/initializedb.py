@@ -4,7 +4,6 @@ from collections import Counter
 from itertools import islice
 from pathlib import Path
 
-import sqlalchemy
 from nameparser import HumanName
 
 from clld.db.meta import DBSession
@@ -59,9 +58,7 @@ def make_contributors(csv_feature_lists):
         for full_name in sorted(full_names)}
 
 
-def iter_contribution_contributors(
-    csv_feature_lists, feature_lists, contributors,
-):
+def iter_contribution_contributors(csv_feature_lists, feature_lists, contributors):
     list_authors = (
         (ls['ID'], number, normalise_name(author))
         for ls in csv_feature_lists
@@ -74,58 +71,20 @@ def iter_contribution_contributors(
         for list_id, number, author_id in list_authors)
 
 
-def make_featurelists(csv_feature_lists, csv_features):
-    featurelist_features = Counter(f['Feature_List_ID'] for f in csv_features)
+def make_feature_lists(csv_feature_lists, csv_features):
+    feature_list_features = Counter(f['Feature_List_ID'] for f in csv_features)
     return {
         ls['ID']: models.FeatureList(
             id=slug(ls['Name']),
             name=ls['Name'],
             url=ls.get('URL'),
-            number_of_features=featurelist_features[ls['ID']],
+            number_of_features=feature_list_features[ls['ID']],
             year=ls.get('Year'))
         for ls in csv_feature_lists}
 
 
-def make_metafeatures(csv_metafeatures):
-    return {
-        mf['ID']: models.Metafeature(
-            id=mf['ID'],
-            name=mf['Name'],
-            area=mf.get('Feature_Area'))
-        for mf in csv_metafeatures}
-
-
-def make_valuesets(csv_features, feature_lists, metafeatures, dummy_language):
-    return {
-        (feature['Feature_List_ID'], feature['Metafeature_ID']):
-        common.ValueSet(
-            id='{}-{}'.format(
-                (mf_pk := metafeatures[feature['Metafeature_ID']].pk),
-                (list_pk := feature_lists[feature['Feature_List_ID']].pk)),
-            language_pk=dummy_language.pk,
-            contribution_pk=list_pk,
-            parameter_pk=mf_pk)
-        for feature in csv_features}
-
-
-def iter_features(csv_features, valuesets):
-    return (
-        models.Feature(
-            id=slug(feature['ID']),
-            name=feature.get('Name') or feature['ID'],
-            description=feature.get('Description'),
-            valueset_pk=valuesets[feature['Feature_List_ID'], feature['Metafeature_ID']].pk)
-        for feature in csv_features)
-
-
-def make_concepts(csv_concepts, csv_features, csv_concept_metafeatures):
-    metafeature_features = Counter(f['Metafeature_ID'] for f in csv_features)
-    concept_features = {}
-    for assoc in csv_concept_metafeatures:
-        concept_id = assoc['Concept_ID']
-        metafeature_id = assoc['Metafeature_ID']
-        count = concept_features.get(concept_id) or 0
-        concept_features[concept_id] = count + metafeature_features[metafeature_id]
+def make_concepts(csv_concepts, csv_concept_features):
+    feature_counts = Counter(cf['Concept_ID'] for cf in csv_concept_features)
     return {
         concept['ID']: models.Concept(
             id=concept['ID'],
@@ -140,7 +99,7 @@ def make_concepts(csv_concepts, csv_features, csv_concept_metafeatures):
             croft_definition=concept.get('Croft_definition'),
             croft_url=concept.get('Croft_URL'),
             quotation=concept.get('Quotation'),
-            number_of_features=concept_features.get(concept['ID']))
+            number_of_features=feature_counts.get(concept['ID']))
         for concept in csv_concepts}
 
 
@@ -182,7 +141,7 @@ def make_sources(bibtex_sources):
         if (persons := authors or editors):
             authoryear = '{} {}'.format(' '.join(persons[0].last_names), year)
         else:
-            auhoryear = year
+            authoryear = year
         try:
             year_int = int(year or '', 10)
         except ValueError:
@@ -229,14 +188,24 @@ def make_sources(bibtex_sources):
     return sources
 
 
-def iter_concept_metafeatures(
-    csv_concept_metafeatures, concepts, metafeatures,
-):
+def make_features(csv_features, feature_lists):
+    return {
+        feature['ID']: models.Feature(
+            id=slug(feature['ID']),
+            name=feature.get('Name') or feature['ID'],
+            description=feature.get('Description'),
+            contribution_pk=feature_lists[feature['Feature_List_ID']].pk,
+            feature_list_url=feature.get('Feature_List_URL'),
+            feature_list_numbers=feature.get('Feature_List_Numbers'))
+        for feature in csv_features}
+
+
+def iter_concept_features(csv_concept_features, concepts, features):
     return (
-        models.ConceptMetafeature(
+        models.ConceptFeature(
             concept_pk=concepts[assoc['Concept_ID']].pk,
-            metafeature_pk=metafeatures[assoc['Metafeature_ID']].pk)
-        for assoc in csv_concept_metafeatures)
+            feature_pk=features[assoc['Feature_ID']].pk)
+        for assoc in csv_concept_features)
 
 
 def iter_concept_relations(csv_concept_pairs, concepts):
@@ -274,19 +243,15 @@ def main(_args):
     csv_feature_lists = [
         {k: v for k, v in row.items() if v}
         for row in dsv.reader(csvw_folder / 'feature-lists.csv', dicts=True)]
-    csv_metafeatures = [
-        {k: v for k, v in row.items() if v}
-        for row in dsv.reader(csvw_folder / 'metafeatures.csv', dicts=True)]
     csv_features = [
         {k: v for k, v in row.items() if v}
         for row in dsv.reader(csvw_folder / 'features.csv', dicts=True)]
     csv_concepts = [
         {k: v for k, v in row.items() if v}
         for row in dsv.reader(csvw_folder / 'concepts.csv', dicts=True)]
-    csv_concept_metafeatures = [
+    csv_concept_features = [
         {k: v for k, v in row.items() if v}
-        for row in dsv.reader(
-            csvw_folder / 'concepts-metafeatures.csv', dicts=True)]
+        for row in dsv.reader(csvw_folder / 'concepts-features.csv', dicts=True)]
     csv_concept_hierarchy = list(drop_column_header(
         dsv.reader(csvw_folder / 'concept-hierarchy.csv'),
         ['Child_ID', 'Parent_ID']))
@@ -310,27 +275,20 @@ def main(_args):
     contributors = make_contributors(csv_feature_lists)
     DBSession.add_all(contributors.values())
 
-    feature_lists = make_featurelists(csv_feature_lists, csv_features)
+    feature_lists = make_feature_lists(csv_feature_lists, csv_features)
     DBSession.add_all(feature_lists.values())
 
-    metafeatures = make_metafeatures(csv_metafeatures)
-    # TODO: remove this hack when the data curation code produces unique names
-    DBSession.execute(sqlalchemy.text("""
-        ALTER TABLE parameter DROP CONSTRAINT parameter_name_key;
-    """))
-    DBSession.add_all(metafeatures.values())
-
-    concepts = make_concepts(csv_concepts, csv_features, csv_concept_metafeatures)
+    concepts = make_concepts(csv_concepts, csv_concept_features)
     DBSession.add_all(concepts.values())
 
     sources = make_sources(bibtex_sources)
     DBSession.add_all(sources.values())
 
-    dummy_language = common.Language(name='English')
-    DBSession.add(dummy_language)
-
-    # NOTE: Flushing to make sure primary keys are assigned.
+    # Flushing to make sure primary keys are assigned.
     DBSession.flush()
+
+    features = make_features(csv_features, feature_lists)
+    DBSession.add_all(features.values())
 
     DBSession.add_all(
         common.Editor(
@@ -341,19 +299,13 @@ def main(_args):
     DBSession.add_all(iter_contribution_contributors(
         csv_feature_lists, feature_lists, contributors))
 
-    DBSession.add_all(iter_concept_metafeatures(
-        csv_concept_metafeatures, concepts, metafeatures))
     DBSession.add_all(iter_concept_relations(csv_concept_hierarchy, concepts))
     DBSession.add_all(iter_concept_references(csv_concepts, concepts, sources))
 
-    valuesets = make_valuesets(
-        csv_features, feature_lists, metafeatures, dummy_language)
-    DBSession.add_all(valuesets.values())
-
-    # NOTE: Flushing to make sure primary keys are assigned.
+    # Flushing to make sure primary keys are assigned.
     DBSession.flush()
 
-    DBSession.add_all(iter_features(csv_features, valuesets))
+    DBSession.add_all(iter_concept_features(csv_concept_features, concepts, features))
 
 
 def prime_cache(_args):
@@ -361,9 +313,6 @@ def prime_cache(_args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
-    for param in DBSession.query(models.Metafeature):
-        param.representation = len({a.contribution_pk for a in param.valuesets})
-
     for concept in DBSession.query(models.Concept):
         concept.in_degree = len(concept.parents)
         concept.out_degree = len(concept.children)

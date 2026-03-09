@@ -27,12 +27,11 @@
     </ul>
     % endif
     <%
-      features = list(request.db.query(m.Feature)
-        .join(common.ValueSet)
+      features = list(
+        request.db.query(m.Feature)
+        .join(m.ConceptFeature)
+        .filter(m.ConceptFeature.concept_pk == ctx.pk)
         .outerjoin(common.Contribution)
-        .join(m.Metafeature)
-        .join(m.ConceptMetafeature)
-        .filter(m.ConceptMetafeature.concept_pk == ctx.pk)
         .distinct())
     %>
     % if features:
@@ -41,8 +40,8 @@
       % for feature in features:
       <li>
         ${h.link(req, feature)}
-        % if feature.valueset.contribution:
-        (${h.link(req, feature.valueset.contribution)})
+        % if feature.contribution:
+        (${h.link(req, feature.contribution)})
         % endif
       </li>
       % endfor
@@ -55,7 +54,7 @@
 % if ctx.description or ctx.comments or ctx.wikipedia_counterpart or ctx.sil_counterpart or ctx.croft_counterpart or ctx.quotation or ctx.references:
 <dl class="concept-properties">
   % if ctx.description:
-  <dt>Description</dt>
+  <dt>Definition</dt>
   <dd>${ctx.description}</dd>
   % endif
   % if ctx.comments:

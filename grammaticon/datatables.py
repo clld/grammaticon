@@ -1,10 +1,8 @@
 from sqlalchemy.orm import joinedload
 
-from clld.db.models.common import Contribution, Parameter, Value, ValueSet
+from clld.db.models.common import Contribution
 from clld.db.util import get_distinct_values
 from clld.web.datatables.base import Col, DataTable, LinkCol
-from clld.web.datatables.parameter import Parameters
-from clld.web.datatables.value import Values
 from clld.web.util.helpers import link, external_link
 from clld.web.util.htmllib import HTML
 
@@ -43,7 +41,7 @@ class FeatureConceptsCol(Col):
         feature = self.get_obj(item)
         unique_concepts = {
             assoc.concept.pk: assoc.concept
-            for assoc in feature.valueset.parameter.concept_assocs}
+            for assoc in feature.concept_assocs}
         concepts = sorted(unique_concepts.values(), key=_concept_label)
         return semicolon_separated_span(
             link(self.dt.req, concept, label=_concept_label(concept))
@@ -111,36 +109,19 @@ class Concepts(DataTable):
         ]
 
 
-class Metafeatures(Parameters):
-    def col_defs(self):
-        return [
-            LinkCol(self, 'name'),
-            Col(self, '# of feature lists', model_col=models.Metafeature.representation),
-            Col(self, 'area'),
-        ]
+class Features(DataTable):
+    __constraints__ = [Contribution]
 
-
-class Features(Values):
     def base_query(self, query):
-        query = query.join(ValueSet)
-
-        if self.parameter:
-            query = query.filter(
-                ValueSet.parameter_pk == self.parameter.pk)
-        else:
-            query = query.join(models.Metafeature)
-
         if self.contribution:
             query = query.filter(
-                ValueSet.contribution_pk == self.contribution.pk)
+                models.Feature.contribution_pk == self.contribution.pk)
         else:
             query = query.join(models.FeatureList)
 
         query = query.options(
-            joinedload(models.Feature.valueset)
-            .joinedload(ValueSet.parameter)
-            .joinedload(models.Metafeature.concept_assocs)
-            .joinedload(models.ConceptMetafeature.concept))
+            joinedload(models.Feature.concept_assocs)
+            .joinedload(models.ConceptFeature.concept))
 
         return query
 
@@ -154,11 +135,8 @@ class Features(Values):
             'database',
             model_col=Contribution.name,
             choices=get_distinct_values(Contribution.name),
-            get_object=lambda o: o.valueset.contribution)
+            get_object=lambda o: o.contribution)
         if self.contribution:
-            concepts = FeatureConceptsCol(self, 'concepts', sTitle='Grammatical concepts')
-            return [name, description, concepts, languages]
-        elif self.parameter:
             concepts = FeatureConceptsCol(self, 'concepts', sTitle='Grammatical concepts')
             return [name, description, concepts, languages]
         else:
@@ -167,7 +145,6 @@ class Features(Values):
 
 
 def includeme(config):
-    config.register_datatable('contributions', Featurelists)
-    config.register_datatable('values', Features)
-    config.register_datatable('parameters', Metafeatures)
     config.register_datatable('concepts', Concepts)
+    config.register_datatable('features', Features)
+    config.register_datatable('contributions', Featurelists)

@@ -6,7 +6,7 @@ from clld.web.app import menu_item
 
 # we must make sure custom models are known at database initialization!
 from grammaticon import models  # noqa
-from grammaticon.interfaces import IConcept
+from grammaticon.interfaces import IConcept, IFeature
 
 
 _ = lambda s: s  # noqa
@@ -33,12 +33,11 @@ def main(_global_config, **settings):
     config = Configurator(settings=settings)
     config.include('clldmpg')
     config.register_resource('concept', models.Concept, IConcept, with_index=True)
+    config.register_resource('feature', models.Feature, IFeature, with_index=True)
 
     config.register_menu(
-        ('dataset', partial(menu_item, 'dataset', label='Home')),
         ('concepts', partial(menu_item, 'concepts')),
-        ('values', partial(menu_item, 'values')),
-        # ('parameters', partial(menu_item, 'parameters')),
+        ('features', partial(menu_item, 'features')),
         ('contributions', partial(menu_item, 'contributions')),
     )
 

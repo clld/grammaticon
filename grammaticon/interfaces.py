@@ -2,4 +2,8 @@ from zope.interface import Interface
 
 
 class IConcept(Interface):
-    """marker."""
+    """Concept -- cross-database concept."""
+
+
+class IFeature(Interface):
+    """Database-specific feature."""
