@@ -1,13 +1,13 @@
 <%inherit file="../home_comp.mako"/>
 
 <%block name="head">
-    <script src="${request.static_url('grammaticon:static/sigmajs/sigma.js')}"></script>
+    <script src="${request.static_url('grammaticon:static/sigmajs/sigma.min.js')}"></script>
     <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.parsers.json.min.js')}"></script>
     <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.layout.forceAtlas2.min.js')}"></script>
     <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.renderers.edgeLabels.min.js')}"></script>
     <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.plugins.animate.min.js')}"></script>
     <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.plugins.dragNodes.min.js')}"></script>
-    <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.layout.noverlap.js')}"></script>
+    <script src="${request.static_url('grammaticon:static/sigmajs/plugins/sigma.layout.noverlap.min.js')}"></script>
 
     <style type="text/css">
         #container {
