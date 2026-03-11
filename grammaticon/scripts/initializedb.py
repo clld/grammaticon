@@ -259,7 +259,7 @@ def main(_args):
 
     # fill data base
 
-    dataset = common.Dataset(
+    dataset = models.GrammaticonDataset(
         id=grammaticon.__name__,
         name="Grammaticon",
         publisher_name="Max Planck Institute for Evolutionary Anthropology",
@@ -269,7 +269,11 @@ def main(_args):
         domain='grammaticon.clld.org',
         jsondata={
             'license_icon': 'cc-by.png',
-            'license_name': 'Creative Commons Attribution 4.0 International License'})
+            'license_name': 'Creative Commons Attribution 4.0 International License'},
+        version="v0.1",
+        doi='TBA',
+        repo='https://github.com/clld/grammaticon-data',
+        zenodo_conept_doi='TBA')
     DBSession.add(dataset)
 
     contributors = make_contributors(csv_collections)

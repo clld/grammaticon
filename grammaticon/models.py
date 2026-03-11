@@ -5,9 +5,18 @@ from sqlalchemy.orm import relationship
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
 from clld.db.models.source import HasSourceNotNullMixin
-from clld.db.models.common import Contribution, IdNameDescriptionMixin
+from clld.db.models.common import Contribution, Dataset, IdNameDescriptionMixin
 
 from grammaticon.interfaces import IConcept, IFeature
+
+
+@implementer(interfaces.IDataset)
+class GrammaticonDataset(CustomModelMixin, Dataset):
+    pk = Column(Integer, ForeignKey('dataset.pk'), primary_key=True)
+    version = Column(Unicode)
+    doi = Column(Unicode)
+    repo = Column(Unicode)
+    zenodo_conept_doi = Column(Unicode)
 
 
 @implementer(IConcept)
