@@ -34,11 +34,13 @@ def main(_global_config, **settings):
     config.include('clldmpg')
     config.register_resource('concept', models.Concept, IConcept, with_index=True)
     config.register_resource('feature', models.Feature, IFeature, with_index=True)
+    config.add_page('conceptrelations')
 
     config.register_menu(
         ('concepts', partial(menu_item, 'concepts')),
         ('features', partial(menu_item, 'features')),
         ('contributions', partial(menu_item, 'contributions')),
+        ('conceptrelations', lambda _ctx, req: (req.route_url('conceptrelations'), 'Concept relations')),
     )
 
     config.add_route('relations', '/relations')
