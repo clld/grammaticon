@@ -4,7 +4,7 @@
 <%block name="title">Feature: ${ctx.name}</%block>
 
 <%def name="sidebar()">
-    <%util:well title="Featurelist">
+    <%util:well title="Collection">
         ${h.link(req, ctx.contribution)}<br/>
         by ${h.linked_contributors(req, ctx.contribution)}
     </%util:well>

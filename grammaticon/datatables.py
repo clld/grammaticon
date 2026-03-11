@@ -53,23 +53,23 @@ class ContributionCol(Col):
         return link(self.dt.req, item, label=f'{item.name} features')
 
 
-class Featurelists(DataTable):
+class Collections(DataTable):
     def col_defs(self):
         return [
-            Col(self, 'name', sTitle='Dataset name'),
+            Col(self, 'name', sTitle='Collection name'),
             ContributionCol(
-                self, 'name', sTitle='Dataset features',
+                self, 'name', sTitle='Collection features',
                 model_col=Contribution.name),
             Col(self, 'url', sTitle='URL',
-                model_col=models.FeatureList.url),
-            Col(self, 'description', model_col=models.FeatureList.description),
+                model_col=models.Collection.url),
+            Col(self, 'description', model_col=models.Collection.description),
             Col(self,
                 'number_of_features',
                 sClass='right',
                 bSearchable=False,
                 input_size='mini',
                 sTitle='#&nbsp;Features',
-                model_col=models.FeatureList.number_of_features),
+                model_col=models.Collection.number_of_features),
         ]
 
 
@@ -117,7 +117,7 @@ class Features(DataTable):
             query = query.filter(
                 models.Feature.contribution_pk == self.contribution.pk)
         else:
-            query = query.join(models.FeatureList)
+            query = query.join(models.Collection)
 
         query = query.options(
             joinedload(models.Feature.concept_assocs)
@@ -132,7 +132,7 @@ class Features(DataTable):
         languages = DummyCol(self, 'name', sTitle='Languages')
         contrib = LinkCol(
             self,
-            'database',
+            'collection',
             model_col=Contribution.name,
             choices=get_distinct_values(Contribution.name),
             get_object=lambda o: o.contribution)
@@ -147,4 +147,4 @@ class Features(DataTable):
 def includeme(config):
     config.register_datatable('concepts', Concepts)
     config.register_datatable('features', Features)
-    config.register_datatable('contributions', Featurelists)
+    config.register_datatable('contributions', Collections)

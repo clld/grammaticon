@@ -54,12 +54,12 @@ class Feature(IdNameDescriptionMixin, Base):
     contribution_pk = Column(Integer, ForeignKey('contribution.pk'))
     contribution = relationship(Contribution, backref='features')
 
-    feature_list_url = Column(Unicode)
-    feature_list_numbers = Column(Unicode)
+    collection_url = Column(Unicode)
+    collection_numbers = Column(Unicode)
 
 
 @implementer(interfaces.IContribution)
-class FeatureList(CustomModelMixin, Contribution):
+class Collection(CustomModelMixin, Contribution):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     year = Column(Unicode)
     url = Column(Unicode)

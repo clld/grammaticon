@@ -44,12 +44,12 @@ def normalise_name(name):
     return slug(f'{name.last}{name.first}')
 
 
-def make_contributors(csv_feature_lists):
+def make_contributors(csv_collections):
     # explicitly add the editors
     full_names = {'Martin Haspelmath', 'Robert Forkel'}
     full_names.update(
         name
-        for ls in csv_feature_lists
+        for ls in csv_collections
         for name in iter_list_authors(ls))
     return {
         (id_ := normalise_name(full_name)): common.Contributor(
@@ -58,29 +58,29 @@ def make_contributors(csv_feature_lists):
         for full_name in sorted(full_names)}
 
 
-def iter_contribution_contributors(csv_feature_lists, feature_lists, contributors):
+def iter_contribution_contributors(csv_collections, collections, contributors):
     list_authors = (
         (ls['ID'], number, normalise_name(author))
-        for ls in csv_feature_lists
+        for ls in csv_collections
         for number, author in enumerate(iter_list_authors(ls), 1))
     return (
         common.ContributionContributor(
-            contribution_pk=feature_lists[list_id].pk,
+            contribution_pk=collections[list_id].pk,
             contributor_pk=contributors[author_id].pk,
             ord=number)
         for list_id, number, author_id in list_authors)
 
 
-def make_feature_lists(csv_feature_lists, csv_features):
-    feature_list_features = Counter(f['Feature_List_ID'] for f in csv_features)
+def make_collections(csv_collections, csv_features):
+    collection_features = Counter(f['Collection_ID'] for f in csv_features)
     return {
-        ls['ID']: models.FeatureList(
+        ls['ID']: models.Collection(
             id=slug(ls['Name']),
             name=ls['Name'],
             url=ls.get('URL'),
-            number_of_features=feature_list_features[ls['ID']],
+            number_of_features=collection_features[ls['ID']],
             year=ls.get('Year'))
-        for ls in csv_feature_lists}
+        for ls in csv_collections}
 
 
 def make_concepts(csv_concepts, csv_concept_features):
@@ -188,15 +188,15 @@ def make_sources(bibtex_sources):
     return sources
 
 
-def make_features(csv_features, feature_lists):
+def make_features(csv_features, collections):
     return {
         feature['ID']: models.Feature(
             id=slug(feature['ID']),
             name=feature.get('Name') or feature['ID'],
             description=feature.get('Description'),
-            contribution_pk=feature_lists[feature['Feature_List_ID']].pk,
-            feature_list_url=feature.get('Feature_List_URL'),
-            feature_list_numbers=feature.get('Feature_List_Numbers'))
+            contribution_pk=collections[feature['Collection_ID']].pk,
+            collection_url=feature.get('Collection_URL'),
+            collection_numbers=feature.get('Collection_Numbers'))
         for feature in csv_features}
 
 
@@ -240,9 +240,9 @@ def main(_args):
         Path(__file__).parent.parent.parent.parent
         / 'grammaticon-data' / 'csvw')
 
-    csv_feature_lists = [
+    csv_collections = [
         {k: v for k, v in row.items() if v}
-        for row in dsv.reader(csvw_folder / 'feature-lists.csv', dicts=True)]
+            for row in dsv.reader(csvw_folder / 'collections.csv', dicts=True)]
     csv_features = [
         {k: v for k, v in row.items() if v}
         for row in dsv.reader(csvw_folder / 'features.csv', dicts=True)]
@@ -272,11 +272,11 @@ def main(_args):
             'license_name': 'Creative Commons Attribution 4.0 International License'})
     DBSession.add(dataset)
 
-    contributors = make_contributors(csv_feature_lists)
+    contributors = make_contributors(csv_collections)
     DBSession.add_all(contributors.values())
 
-    feature_lists = make_feature_lists(csv_feature_lists, csv_features)
-    DBSession.add_all(feature_lists.values())
+    collections = make_collections(csv_collections, csv_features)
+    DBSession.add_all(collections.values())
 
     concepts = make_concepts(csv_concepts, csv_concept_features)
     DBSession.add_all(concepts.values())
@@ -287,7 +287,7 @@ def main(_args):
     # Flushing to make sure primary keys are assigned.
     DBSession.flush()
 
-    features = make_features(csv_features, feature_lists)
+    features = make_features(csv_features, collections)
     DBSession.add_all(features.values())
 
     DBSession.add_all(
@@ -297,7 +297,7 @@ def main(_args):
             ord=number)
         for number, eid in enumerate(['haspelmathmartin', 'forkelrobert'], 1))
     DBSession.add_all(iter_contribution_contributors(
-        csv_feature_lists, feature_lists, contributors))
+        csv_collections, collections, contributors))
 
     DBSession.add_all(iter_concept_relations(csv_concept_hierarchy, concepts))
     DBSession.add_all(iter_concept_references(csv_concepts, concepts, sources))

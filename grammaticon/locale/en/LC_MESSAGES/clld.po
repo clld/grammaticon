@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grammaticon 0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-16 12:13+0100\n"
+"POT-Creation-Date: 2026-03-11 10:03+0100\n"
 "PO-Revision-Date: 2017-07-27 15:30+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -29,11 +29,11 @@ msgstr "Metafeatures"
 
 #: grammaticon/__init__.py:15
 msgid "Contribution"
-msgstr "Dataset"
+msgstr "Collection"
 
 #: grammaticon/__init__.py:16
 msgid "Contributions"
-msgstr "Datasets"
+msgstr "Collections"
 
 #: grammaticon/__init__.py:17
 msgid "Contributor"
