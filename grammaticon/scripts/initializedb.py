@@ -25,11 +25,17 @@ def drop_column_header(iterable, column_order):
             f'wrong column order: {header!r} != {column_order!r}')
 
 
+ID_CHARS = (
+    'abcdefghijklmnopqrstuvwxyz'
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    '0123456789-_ \t\n')
+
+
 def slug(s, remove_whitespace=True, lowercase=True):
     return ''.join(
         c.lower() if lowercase else c
         for c in unicodedata.normalize('NFKD', s)
-        if c.isascii() and (not remove_whitespace or not c.isspace()))
+        if c in ID_CHARS and (not remove_whitespace or not c.isspace()))
 
 
 def iter_list_authors(coll):
