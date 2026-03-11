@@ -44,15 +44,18 @@ also include lexical features and/or cognate features.</p>
 
 <h3>Cite</h3>
 
-<p>Haspelmath, Martin &amp; Johannes Englisch (eds.) 2026. Grammaticon v1.0. Leipzig:
+<p>Haspelmath, Martin &amp; Johannes Englisch (eds.) 2026. Grammaticon
+# TODO: dont hardcode version
+v1.0.
+Leipzig:
 Max Planck Institute for Evolutionary Anthropology. (Available online at
-<a href="https://grammaticon.clld.org">https://grammaticon.clld.org</a>,
+<a href="${req.dataset.domain}">${req.dataset.domain}</a>,
 ## TODO: add doi
 DOI: <i>TBA</i>)</p>
 
 <h3>Version</h3>
 
-<p><a href="https://grammaticon.clld.org">https://grammaticon.clld.org</a>
+<p><a href="${req.dataset.domain}">${req.dataset.domain}</a>
 serves the latest released version of data curated at
 ${h.external_link(req.dataset.repo)}.
 Older released versions are accessible

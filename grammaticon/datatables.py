@@ -57,12 +57,13 @@ class Collections(DataTable):
     def col_defs(self):
         return [
             Col(self, 'name', sTitle='Collection name'),
+            Col(self, 'year', model_col=models.Collection.year),
             ContributionCol(
                 self, 'name', sTitle='Collection features',
                 model_col=Contribution.name),
-            Col(self, 'url', sTitle='URL',
-                model_col=models.Collection.url),
             Col(self, 'description', model_col=models.Collection.description),
+            Col(self, 'contributor_list', sTitle='Feature contributors',
+                model_col=models.Collection.contributor_list),
             Col(self,
                 'number_of_features',
                 sClass='right',
@@ -71,6 +72,11 @@ class Collections(DataTable):
                 sTitle='#&nbsp;Features',
                 model_col=models.Collection.number_of_features),
         ]
+
+    def get_options(self):
+        opts = super().get_options()
+        opts['aaSorting'] = [[5, 'desc']]
+        return opts
 
 
 class SILLinkCol(Col):
@@ -95,8 +101,8 @@ class Concepts(DataTable):
             LinkCol(self, 'name', sTitle='Concept name'),
             Col(self, 'description', sTitle='Definition'),
             WikiLinkCol(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
-            SILLinkCol(self, 'sil_counterpart', sTitle='SIL dictionary'),
-            Col(self, 'croft_definition', sTitle='Croft (2022) definition'),
+            SILLinkCol(self, 'sil_counterpart', sTitle='SIL glossary'),
+            Col(self, 'croft_definition', sTitle="Croft's comparative concept"),
             Col(self,
                 'number_of_features',
                 sClass='right',
@@ -127,7 +133,6 @@ class Features(DataTable):
 
     def col_defs(self):
         name = LinkCol(self, 'name', sTitle='Feature name')
-        description = Col(self, 'description', sTitle='Feature description')
         # TODO(johannes): fill with data
         languages = DummyCol(self, 'name', sTitle='Languages')
         contrib = LinkCol(
@@ -136,11 +141,11 @@ class Features(DataTable):
             model_col=Contribution.name,
             choices=get_distinct_values(Contribution.name),
             get_object=lambda o: o.contribution)
+        concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related concepts')
         if self.contribution:
-            concepts = FeatureConceptsCol(self, 'concepts', sTitle='Grammatical concepts')
+            description = Col(self, 'description', sTitle='Feature description')
             return [name, description, concepts, languages]
         else:
-            concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related concepts')
             return [name, contrib, concepts]
 
 

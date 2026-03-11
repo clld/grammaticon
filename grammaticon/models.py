@@ -65,6 +65,7 @@ class Feature(IdNameDescriptionMixin, Base):
 
     collection_url = Column(Unicode)
     collection_numbers = Column(Unicode)
+    comment = Column(Unicode)
 
 
 @implementer(interfaces.IContribution)
@@ -73,6 +74,7 @@ class Collection(CustomModelMixin, Contribution):
     year = Column(Unicode)
     url = Column(Unicode)
     number_of_features = Column(Integer)
+    contributor_list = Column(Unicode)
 
 
 class ConceptFeature(Base):

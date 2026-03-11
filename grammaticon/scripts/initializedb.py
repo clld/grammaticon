@@ -32,10 +32,10 @@ def slug(s, remove_whitespace=True, lowercase=True):
         if c.isascii() and (not remove_whitespace or not c.isspace()))
 
 
-def iter_list_authors(ls):
+def iter_list_authors(coll):
     return (
         trimmed_name
-        for name in ls.get('Authors', '').replace('et al.', '').split(',')
+        for name in coll.get('Authors', '').replace('et al.', '').split(',')
         if (trimmed_name := name.strip()))
 
 
@@ -49,8 +49,8 @@ def make_contributors(csv_collections):
     full_names = {'Martin Haspelmath', 'Robert Forkel'}
     full_names.update(
         name
-        for ls in csv_collections
-        for name in iter_list_authors(ls))
+        for coll in csv_collections
+        for name in iter_list_authors(coll))
     return {
         (id_ := normalise_name(full_name)): common.Contributor(
             id=id_,
@@ -60,9 +60,9 @@ def make_contributors(csv_collections):
 
 def iter_contribution_contributors(csv_collections, collections, contributors):
     list_authors = (
-        (ls['ID'], number, normalise_name(author))
-        for ls in csv_collections
-        for number, author in enumerate(iter_list_authors(ls), 1))
+        (coll['ID'], number, normalise_name(author))
+        for coll in csv_collections
+        for number, author in enumerate(iter_list_authors(coll), 1))
     return (
         common.ContributionContributor(
             contribution_pk=collections[list_id].pk,
@@ -74,13 +74,14 @@ def iter_contribution_contributors(csv_collections, collections, contributors):
 def make_collections(csv_collections, csv_features):
     collection_features = Counter(f['Collection_ID'] for f in csv_features)
     return {
-        ls['ID']: models.Collection(
-            id=slug(ls['Name']),
-            name=ls['Name'],
-            url=ls.get('URL'),
-            number_of_features=collection_features[ls['ID']],
-            year=ls.get('Year'))
-        for ls in csv_collections}
+        coll['ID']: models.Collection(
+            id=slug(coll['Name']),
+            name=coll['Name'],
+            url=coll.get('URL'),
+            number_of_features=collection_features[coll['ID']],
+            year=coll.get('Year'),
+            contributor_list=coll.get('Contributors'))
+        for coll in csv_collections}
 
 
 def make_concepts(csv_concepts, csv_concept_features):
@@ -196,7 +197,8 @@ def make_features(csv_features, collections):
             description=feature.get('Description'),
             contribution_pk=collections[feature['Collection_ID']].pk,
             collection_url=feature.get('Collection_URL'),
-            collection_numbers=feature.get('Collection_Numbers'))
+            collection_numbers=feature.get('Collection_Numbers'),
+            comment=feature.get('Comment'))
         for feature in csv_features}
 
 
@@ -266,7 +268,8 @@ def main(_args):
         publisher_place="Leipzig",
         publisher_url="http://www.eva.mpg.de",
         license="http://creativecommons.org/licenses/by/4.0/",
-        domain='grammaticon.clld.org',
+        domain='https://grammaticon.clld.org',
+        contact='martin_haspelmath@eva.mpg.de',
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'},

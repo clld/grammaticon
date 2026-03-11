@@ -62,7 +62,7 @@
   <dd>${ctx.comments}</dd>
   % endif
   % if ctx.croft_counterpart:
-  <dt>Croft (2022)</dt>
+  <dt>Croft</dt>
   <dd>
     <strong>${h.external_link(ctx.croft_url, label=ctx.croft_counterpart) if ctx.croft_url else ctx.croft_counterpart}</strong>${':' if ctx.croft_definition else ''}
     % if ctx.croft_definition:
@@ -79,7 +79,7 @@
   %   endif
   % endif
   % if ctx.sil_counterpart:
-  <dt>SIL dictionary</dt>
+  <dt>SIL glossary</dt>
   %   if ctx.sil_url:
   <dd>${h.external_link(ctx.sil_url, label=ctx.sil_counterpart)}</dd>
   %   else:

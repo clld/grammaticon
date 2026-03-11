@@ -40,6 +40,7 @@ def main(_global_config, **settings):
         ('concepts', partial(menu_item, 'concepts')),
         ('features', partial(menu_item, 'features')),
         ('contributions', partial(menu_item, 'contributions')),
+        ('sources', partial(menu_item, 'sources')),
         ('conceptrelations', lambda _ctx, req: (req.route_url('conceptrelations'), 'Concept relations')),
     )
 

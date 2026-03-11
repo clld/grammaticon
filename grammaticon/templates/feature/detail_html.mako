@@ -2,15 +2,41 @@
 <%namespace name="util" file="../util.mako"/>
 <%! active_menu_item = "values" %>
 <%block name="title">Feature: ${ctx.name}</%block>
+<%! import grammaticon.models as m %>
 
 <%def name="sidebar()">
-    <%util:well title="Collection">
-        ${h.link(req, ctx.contribution)}<br/>
-        by ${h.linked_contributors(req, ctx.contribution)}
-    </%util:well>
+  <div class="well">
+    <h4>${_('Contribution')}</h4>
+    ${h.link(req, ctx.contribution)}
+    <%
+      concepts = list(
+        request.db.query(m.Concept)
+        .join(m.ConceptFeature)
+        .filter(m.ConceptFeature.feature_pk == ctx.pk)
+        .distinct())
+    %>
+    % if concepts:
+    <h4>Related concepts</h4>
+    <ul>
+      % for concept in concepts:
+      <li>${h.link(req, concept)}</li>
+      % endfor
+    </ul>
+    % endif
+  </div>
 </%def>
 
 <h2>Feature: ${ctx.name}</h2>
-%if ctx.description:
-<div>${u.md(ctx.description)|n}</div>
+
+%if ctx.description or ctx.comment:
+<dl>
+  %if ctx.description:
+  <dt>Description</dt>
+  <dd>${u.md(ctx.description)|n}</dd>
+  %endif
+  %if ctx.comment:
+  <dt>Relation to concepts</dt>
+  <dd>${u.md(ctx.comment)|n}</dd>
+  %endif
+</dl>
 %endif
