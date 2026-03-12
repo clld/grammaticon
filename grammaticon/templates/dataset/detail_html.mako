@@ -45,7 +45,7 @@ also include lexical features and/or cognate features.</p>
 <h3>Cite</h3>
 
 <p>Haspelmath, Martin &amp; Johannes Englisch (eds.) 2026. Grammaticon
-# TODO: dont hardcode version
+## TODO: dont hardcode version
 v1.0.
 Leipzig:
 Max Planck Institute for Evolutionary Anthropology. (Available online at

@@ -83,6 +83,7 @@ def make_collections(csv_collections, csv_features):
         coll['ID']: models.Collection(
             id=slug(coll['Name']),
             name=coll['Name'],
+            description=coll.get('Description'),
             url=coll.get('URL'),
             number_of_features=collection_features[coll['ID']],
             year=coll.get('Year'),
@@ -171,6 +172,7 @@ def make_sources(bibtex_sources):
             editor=editor,
             # explicitly drop falsey values like empty strings
             year=year or 'nd',
+            description=title or None,
             title=title or None,
             type=type_ or None,
             booktitle=booktitle or None,

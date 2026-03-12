@@ -2,7 +2,7 @@ from sqlalchemy.orm import joinedload
 
 from clld.db.models.common import Contribution
 from clld.db.util import get_distinct_values
-from clld.web.datatables.base import Col, DataTable, LinkCol
+from clld.web.datatables.base import Col, DataTable, LinkCol, DetailsRowLinkCol
 from clld.web.util.helpers import link, external_link
 from clld.web.util.htmllib import HTML
 
@@ -149,7 +149,28 @@ class Features(DataTable):
             return [name, contrib, concepts]
 
 
+
+class Sources(DataTable):
+
+    """Default DataTable for Source objects."""
+
+    __toolbar_kw__ = {'dl_formats': {'bib': 'BibTeX'}}
+
+    def base_query(self, query):
+        return query
+
+    def col_defs(self):
+        return [
+            DetailsRowLinkCol(self, 'd'),
+            LinkCol(self, 'name'),
+            Col(self, 'description', sTitle='Title', format=lambda i: HTML.span(i.description)),
+            Col(self, 'year'),
+            Col(self, 'author'),
+        ]
+
+
 def includeme(config):
     config.register_datatable('concepts', Concepts)
     config.register_datatable('features', Features)
     config.register_datatable('contributions', Collections)
+    config.register_datatable('sources', Sources)
