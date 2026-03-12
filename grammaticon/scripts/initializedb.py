@@ -147,7 +147,21 @@ def make_sources(bibtex_sources):
         jsondata = fields
 
         if (persons := authors or editors):
-            authoryear = '{} {}'.format(' '.join(persons[0].last_names), year)
+            if len(persons) == 1:
+                authoryear = '{} {}'.format(
+                    ' '.join(persons[0].last_names),
+                    year)
+            elif len(persons) == 2:
+                authoryear = '{} and {} {}'.format(
+                    ' '.join(persons[0].last_names),
+                    ' '.join(persons[1].last_names),
+                    year)
+            elif len(persons) > 2:
+                authoryear = '{} et al. {}'.format(
+                    ' '.join(persons[0].last_names),
+                    year)
+            else:
+                raise AssertionError('Assuming all citations have authors')
         else:
             authoryear = year
         try:
