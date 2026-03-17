@@ -3,5 +3,5 @@
 <%! active_menu_item = "concepts" %>
 <%block name="title">Concepts</%block>
 
-<h2>Grammatical concepts</h2>
+<h2>Grammaticon concepts</h2>
 ${ctx.render()}

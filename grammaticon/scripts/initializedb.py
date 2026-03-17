@@ -52,7 +52,7 @@ def normalise_name(name):
 
 def make_contributors(csv_collections):
     # explicitly add the editors
-    full_names = {'Martin Haspelmath', 'Robert Forkel'}
+    full_names = {'Martin Haspelmath', 'Johannes Englisch'}
     full_names.update(
         name
         for coll in csv_collections
@@ -218,8 +218,9 @@ def make_features(csv_features, collections):
             name=feature.get('Name') or feature['ID'],
             description=feature.get('Description'),
             contribution_pk=collections[feature['Collection_ID']].pk,
-            collection_url=feature.get('Collection_URL'),
-            collection_numbers=feature.get('Collection_Numbers'),
+            url=feature.get('Feature_URL'),
+            id_in_collection=feature.get('ID_in_Collection'),
+            number_of_languages=int(feature['Language_Count']) if 'Language_Count' in feature else None,
             comment=feature.get('Comment'))
         for feature in csv_features}
 
@@ -296,9 +297,9 @@ def main(_args):
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'},
         version="v0.1",
-        doi='TBA',
+        doi=None,  # TODO: DOI
         repo='https://github.com/clld/grammaticon-data',
-        zenodo_conept_doi='TBA')
+        zenodo_concept_doi=None)  # TODO: Concept DOI
     DBSession.add(dataset)
 
     contributors = make_contributors(csv_collections)
@@ -324,7 +325,7 @@ def main(_args):
             dataset_pk=dataset.pk,
             contributor_pk=contributors[eid].pk,
             ord=number)
-        for number, eid in enumerate(['haspelmathmartin', 'forkelrobert'], 1))
+        for number, eid in enumerate(['haspelmathmartin', 'englischjohannes'], 1))
     DBSession.add_all(iter_contribution_contributors(
         csv_collections, collections, contributors))
 

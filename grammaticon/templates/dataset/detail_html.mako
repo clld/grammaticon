@@ -1,6 +1,45 @@
 <%inherit file="../home_comp.mako"/>
+<%namespace name="util" file="../util.mako"/>
 
-<h2>Welcome to grammaticon</h2>
+<%def name="sidebar()">
+  <div style="text-align: center; margin: 1em 5em 1em 5em;">
+    <img
+      src="${request.static_url('grammaticon:static/grammaticon-logo.png')}"
+      alt="Grammaticon logo"
+      style="width: 13em;"
+      />
+  </div>
+
+  <%util:well title="Cite">
+    ${h.newline2br(h.text_citation(request, ctx))|n}
+    % if ctx.doi:
+    <p>
+      <a href="https://doi.org/${ctx.doi}">
+        <img src="https://zenodo.org/badge/DOI/${ctx.doi}.svg" alt="DOI">
+      </a>
+    </p>
+    % endif
+    ${h.cite_button(request, ctx)}
+  </%util:well>
+
+  <%util:well title="Version">
+    <p>
+      <a href="${req.dataset.domain}">${req.dataset.domain}</a>
+      serves the latest released version of data curated at
+      ${h.external_link(req.dataset.repo)}.
+      % if ctx.zenodo_concept_doi:
+      Older released versions are accessible via DOI
+      <a href="https://doi.org/${ctx.zenodo_concept_doi}">
+        <img src="https://zenodo.org/badge/DOI/${ctx.zenodo_concept_doi}.svg" alt="DOI">
+      </a>
+      on Zenodo as well.
+      % endif
+    </p>
+  </%util:well>
+
+</%def>
+
+<h2>Welcome to the Grammaticon</h2>
 
 <p>The Grammaticon is a collection of grammatical comparative concept terms with
 definitions and links to other resources and comparative data collections such
@@ -41,24 +80,3 @@ CrossGram.</p>
 <p>For most of the collections, not all features are included, because the
 Grammaticon focuses on grammatical type features, and some of the collections
 also include lexical features and/or cognate features.</p>
-
-<h3>Cite</h3>
-
-<p>Haspelmath, Martin &amp; Johannes Englisch (eds.) 2026. Grammaticon
-## TODO: dont hardcode version
-v1.0.
-Leipzig:
-Max Planck Institute for Evolutionary Anthropology. (Available online at
-<a href="${req.dataset.domain}">${req.dataset.domain}</a>,
-## TODO: add doi
-DOI: <i>TBA</i>)</p>
-
-<h3>Version</h3>
-
-<p><a href="${req.dataset.domain}">${req.dataset.domain}</a>
-serves the latest released version of data curated at
-${h.external_link(req.dataset.repo)}.
-Older released versions are accessible
-## TODO: add concept doi
-via DOI: <i>TBA</i>
-on Zenodo as well.</p>

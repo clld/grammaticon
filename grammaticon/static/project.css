@@ -1,3 +1,49 @@
 dl.concept-properties dd + dt {
     margin-top: 1em;
 }
+
+.navbar-inner {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#826ba5+0,5a18bc+20,5a18bc+20,5a18bc+80,462f70+100 */
+    background: linear-gradient(to bottom, #826ba5 0%,#5a18bc 20%,#5a18bc 20%,#5a18bc 80%,#462f70 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+.navbar-inner li:hover, .navbar-inner li:focus-within {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b1a5c3+0,9567db+20,9567db+20,9567db+80,856cb4+100 */
+background: linear-gradient(to bottom, #b1a5c3 0%,#9567db 20%,#9567db 20%,#9567db 80%,#856cb4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+.navbar-inner .nav > .active > a {
+    color: white;
+    text-shadow: none;
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#9f91b5+0,7e45d3+20,7e45d3+20,7e45d3+80,6c519f+100 */
+    background: linear-gradient(to bottom, #9f91b5 0%,#7e45d3 20%,#7e45d3 20%,#7e45d3 80%,#6c519f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+.navbar-inner a.brand:hover,
+.navbar-inner .nav > .active > a:hover,
+.navbar-inner .nav > .active > a:focus {
+    color: white;
+    text-shadow: none;
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b1a5c3+0,9567db+20,9567db+20,9567db+80,856cb4+100 */
+background: linear-gradient(to bottom, #b1a5c3 0%,#9567db 20%,#9567db 20%,#9567db 80%,#856cb4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+.navbar .nav li a {
+    color: white;
+    text-shadow: none;
+}
+
+.navbar .nav li a:hover {
+    color: white;
+    text-shadow: none;
+}
+
+.navbar .nav li a:focus {
+    color: white;
+    text-shadow: none;
+}
+
+.navbar .brand {
+    color: white;
+    text-shadow: none;
+}

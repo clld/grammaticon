@@ -16,7 +16,7 @@ class GrammaticonDataset(CustomModelMixin, Dataset):
     version = Column(Unicode)
     doi = Column(Unicode)
     repo = Column(Unicode)
-    zenodo_conept_doi = Column(Unicode)
+    zenodo_concept_doi = Column(Unicode)
 
 
 @implementer(IConcept)
@@ -63,8 +63,9 @@ class Feature(IdNameDescriptionMixin, Base):
     contribution_pk = Column(Integer, ForeignKey('contribution.pk'))
     contribution = relationship(Contribution, backref='features')
 
-    collection_url = Column(Unicode)
-    collection_numbers = Column(Unicode)
+    url = Column(Unicode)
+    id_in_collection = Column(Unicode)
+    number_of_languages = Column(Integer)
     comment = Column(Unicode)
 
 
