@@ -23,6 +23,7 @@ def semicolon_separated_span(iterable):
     return HTML.span(*_generate_separators(iterable))
 
 
+# XXX(johannes): is this still needed
 class FeatureConceptsCol(Col):
     """Column listing concepts for a given feature."""
 
@@ -127,15 +128,20 @@ class Features(DataTable):
         else:
             query = query.join(models.Collection)
 
-        query = query.options(
-            joinedload(models.Feature.concept_assocs)
-            .joinedload(models.ConceptFeature.concept))
+        # # XXX(johannes): column has been removed for now
+        # query = query.options(
+        #     joinedload(models.Feature.concept_assocs)
+        #     .joinedload(models.ConceptFeature.concept))
 
         return query
 
     def col_defs(self):
         name = LinkCol(self, 'name', sTitle='Feature name')
-        concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related concepts')
+        # # XXX(johannes): column has been removed fornow
+        # concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related concepts')
+        comment = Col(
+            self, 'comment', sTitle='Relation to concepts',
+            model_col=models.Feature.comment)
         languages = CountCol(
             self,
             'number_of_languages',
@@ -146,7 +152,7 @@ class Features(DataTable):
             model_col=models.Feature.id_in_collection)
         if self.contribution:
             description = Col(self, 'description', sTitle='Feature description')
-            return [name, languages, description, id_in_coll, concepts]
+            return [name, languages, description, id_in_coll, comment]
         else:
             collection = LinkCol(
                 self,
@@ -154,7 +160,7 @@ class Features(DataTable):
                 model_col=Contribution.name,
                 choices=get_distinct_values(Contribution.name),
                 get_object=lambda o: o.contribution)
-            return [name, languages, collection, id_in_coll, concepts]
+            return [name, languages, collection, id_in_coll, comment]
 
     def get_options(self):
         opts = super().get_options()
