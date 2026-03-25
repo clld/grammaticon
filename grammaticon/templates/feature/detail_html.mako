@@ -28,8 +28,12 @@
 
 <h2>Feature: ${ctx.name}</h2>
 
-%if ctx.description or ctx.comment:
+%if ctx.url or ctx.description or ctx.comment:
 <dl>
+  %if ctx.url:
+  <dt>Feature URL:</dt>
+  <dd>${h.external_link(ctx.url)}</dd>
+  %endif
   %if ctx.description:
   <dt>Description</dt>
   <dd>${u.md(ctx.description)|n}</dd>
