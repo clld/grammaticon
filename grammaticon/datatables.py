@@ -7,6 +7,7 @@ from clld.web.util.helpers import link, external_link
 from clld.web.util.htmllib import HTML
 
 from grammaticon import models
+from grammaticon.util import md
 
 
 def _generate_separators(iterable):
@@ -59,10 +60,23 @@ class CountCol(Col):
         return self.model_col.is_not(None), self.model_col
 
 
+class MarkdownCol(Col):
+    def format_value(self, value):
+        return md(value)
+
+
+class CollNameCol(Col):
+    def format(self, item):
+        if item.url:
+            return external_link(item.url, label=item.name)
+        else:
+            return item.name
+
+
 class Collections(DataTable):
     def col_defs(self):
         return [
-            Col(self, 'name', sTitle='Collection name'),
+            CollNameCol(self, 'name', sTitle='Collection name'),
             Col(self, 'year', model_col=models.Collection.year),
             ContributionCol(
                 self, 'name', sTitle='Collection features',
@@ -102,10 +116,10 @@ class Concepts(DataTable):
     def col_defs(self):
         return [
             LinkCol(self, 'name', sTitle='Concept name'),
-            Col(self, 'description', sTitle='Definition'),
+            MarkdownCol(self, 'description', sTitle='Definition'),
             WikiLinkCol(self, 'wikipedia_counterpart', sTitle='Wikipedia'),
             SILLinkCol(self, 'sil_counterpart', sTitle='SIL Glossary'),
-            Col(self, 'croft_definition', sTitle="Croft's comparative concept"),
+            MarkdownCol(self, 'croft_definition', sTitle="Croft's comparative concept"),
             Col(self,
                 'number_of_features',
                 sClass='right',
@@ -138,9 +152,9 @@ class Features(DataTable):
     def col_defs(self):
         name = LinkCol(self, 'name', sTitle='Feature name')
         # # XXX(johannes): column has been removed fornow
-        # concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related concepts')
-        comment = Col(
-            self, 'comment', sTitle='Relation to concepts',
+        # concepts = FeatureConceptsCol(self, 'concepts', sTitle='Related Grammaticon concepts')
+        comment = MarkdownCol(
+            self, 'comment', sTitle='Relation to Grammaticon concepts',
             model_col=models.Feature.comment)
         languages = CountCol(
             self,
@@ -151,7 +165,7 @@ class Features(DataTable):
             self, 'id_in_collection', sTitle='ID in collection',
             model_col=models.Feature.id_in_collection)
         if self.contribution:
-            description = Col(self, 'description', sTitle='Feature description')
+            description = MarkdownCol(self, 'description', sTitle='Feature description')
             return [name, languages, description, id_in_coll, comment]
         else:
             collection = LinkCol(
@@ -202,7 +216,7 @@ class Sources(DataTable):
             Col(self, 'author'),
             Col(self, 'year'),
             Col(self, 'description', sTitle='Title', format=lambda i: HTML.span(i.description)),
-            SourceConceptsCol(self, 'concepts', sTitle='Related concepts'),
+            SourceConceptsCol(self, 'concepts', sTitle='Related Grammaticon concepts'),
         ]
 
 

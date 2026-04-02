@@ -55,7 +55,7 @@
 <dl class="concept-properties">
   % if ctx.description:
   <dt>Definition</dt>
-  <dd>${ctx.description}</dd>
+  <dd>${u.md(ctx.description)|n}</dd>
   % endif
   % if ctx.comments:
   <dt>Comments</dt>
@@ -66,7 +66,7 @@
   <dd>
     <strong>${h.external_link(ctx.croft_url, label=ctx.croft_counterpart) if ctx.croft_url else ctx.croft_counterpart}</strong>${':' if ctx.croft_definition else ''}
     % if ctx.croft_definition:
-    ${ctx.croft_definition}
+      ${u.md(ctx.croft_definition)|n}
     % endif
   </dd>
   % endif

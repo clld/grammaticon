@@ -6,11 +6,15 @@
 
 <h2>${_('Contribution')} ${ctx.name}</h2>
 
+%if ctx.url:
+<p><strong>URL:</strong> ${h.external_link(ctx.url)}</p>
+%endif
+
 ${util.data()}
 
 <% dt = request.get_datatable('features', m.Feature, contribution=ctx) %>
 % if dt:
 <div>
-    ${dt.render()}
+  ${dt.render()}
 </div>
 % endif

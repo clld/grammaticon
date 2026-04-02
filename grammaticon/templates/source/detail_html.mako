@@ -14,7 +14,7 @@
   %>
   % if concepts:
   <div class="well">
-    <h4>Related concepts</h4>
+    <h4>Related Grammaticon concepts</h4>
     <ul>
       % for concept in concepts:
       <li>${h.link(req, concept)}</li>

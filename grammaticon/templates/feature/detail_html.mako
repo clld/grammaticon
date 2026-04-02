@@ -16,7 +16,7 @@
         .distinct())
     %>
     % if concepts:
-    <h4>Related concepts</h4>
+      <h4>Related Grammaticon concepts</h4>
     <ul>
       % for concept in concepts:
       <li>${h.link(req, concept)}</li>
@@ -39,7 +39,7 @@
   <dd>${u.md(ctx.description)|n}</dd>
   %endif
   %if ctx.comment:
-  <dt>Relation to concepts</dt>
+  <dt>Relation to Grammaticon concepts</dt>
   <dd>${u.md(ctx.comment)|n}</dd>
   %endif
 </dl>
