@@ -131,6 +131,11 @@ class Concepts(DataTable):
             # Col(self, 'defining', model_col=models.Concept.out_degree),
         ]
 
+    def get_options(self):
+        opts = super().get_options()
+        opts['aaSorting'] = [[5, 'desc']]
+        return opts
+
 
 class Features(DataTable):
     __constraints__ = [Contribution]
