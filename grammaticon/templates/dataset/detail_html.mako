@@ -52,14 +52,14 @@ as WALS (The World Atlas of Language Structures) and Grambank.</p>
 the English Wikipedia, the SIL Glossary of Linguistic Terms, and Croft’s
 Comparative Concepts Database
 (${h.external_link('https://comparative-concepts.github.io/cc-database/cc-database.html')};
-originally in the online appendix of Croft (2022).
-[[Some concepts have preliminary definitions, enclosed in double square
-brackets.]]</p>
+originally in the online appendix of Croft (2022).</p>
 
 <p>In the definitions, a superscript circle (°) marks terms which are defined
 elsewhere in the Grammaticon (“defining concepts”). Each concept page also shows
 the “derived concepts” (which are defined with reference to it), as well as
-“related features”.</p>
+“related features”.
+[[Some concepts have preliminary definitions, enclosed in double square
+brackets.]]</p>
 
 <h3>Features</h3>
 
