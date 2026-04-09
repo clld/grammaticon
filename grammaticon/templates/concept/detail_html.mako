@@ -59,7 +59,7 @@
   % endif
   % if ctx.comments:
   <dt>Comments</dt>
-  <dd>${ctx.comments}</dd>
+  <dd>${u.md(ctx.comments)}</dd>
   % endif
   % if ctx.croft_counterpart:
   <dt>Croft's comparative concept</dt>
