@@ -224,6 +224,11 @@ class Sources(DataTable):
             SourceConceptsCol(self, 'concepts', sTitle='Related Grammaticon concepts'),
         ]
 
+    def get_options(self):
+        opts = super().get_options()
+        opts['aaSorting'] = [[1, 'asc']]
+        return opts
+
 
 def includeme(config):
     config.register_datatable('concepts', Concepts)

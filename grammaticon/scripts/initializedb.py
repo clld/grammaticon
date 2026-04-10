@@ -8,7 +8,7 @@ from nameparser import HumanName
 
 from clld.db.meta import DBSession
 from clld.db.models import common
-from clld.lib.bibtex import EntryType
+from clld.lib import bibtex
 from csvw import dsv
 from simplepybtex.database import parse_file
 
@@ -111,37 +111,45 @@ def make_concepts(csv_concepts, csv_concept_features):
         for concept in csv_concepts}
 
 
+def latex_unescape(s):
+    return bibtex.unescape(str(s)) if s is not None else s
+
+
 def make_sources(bibtex_sources):
     sources = {}
     for record in bibtex_sources.entries.values():
         authors = record.persons.get('author')
-        author = ' and '.join(map(str, authors)) if authors else None
+        # author = ' and '.join(map(str, authors)) if authors else None
+        author = ' and '.join(map(latex_unescape, authors)) if authors else None
         editors = record.persons.get('editor')
-        editor = ' and '.join(map(str, editors)) if editors else None
+        # editor = ' and '.join(map(str, editors)) if editors else None
+        editor = ' and '.join(map(latex_unescape, editors)) if editors else None
 
         # I don't like mutating the function parameters
-        fields = {k.lower(): v for k, v in record.fields.items()}
+        fields = {
+            k.lower(): latex_unescape(v)
+            for k, v in record.fields.items()}
 
         id_ = record.key
-        bibtex_type = EntryType.from_string(record.type)
-        year = record.fields.pop('year', None)
-        title = record.fields.pop('title', None)
-        type_ = record.fields.pop('type', None)
-        booktitle = record.fields.pop('booktitle', None)
-        pages = record.fields.pop('pages', None)
-        edition = record.fields.pop('edition', None)
-        journal = record.fields.pop('journal', None)
-        school = record.fields.pop('school', None)
-        address = record.fields.pop('address', None)
-        url = record.fields.pop('url', None)
-        note = record.fields.pop('note', None)
-        number = record.fields.pop('number', None)
-        series = record.fields.pop('series', None)
-        volume = record.fields.pop('volume', None)
-        publisher = record.fields.pop('publisher', None)
-        organisation = record.fields.pop('organization', None)
-        chapter = record.fields.pop('chapter', None)
-        howpublished = record.fields.pop('howpublished', None)
+        bibtex_type = bibtex.EntryType.from_string(record.type)
+        year = fields.pop('year', None)
+        title = fields.pop('title', None)
+        type_ = fields.pop('type', None)
+        booktitle = fields.pop('booktitle', None)
+        pages = fields.pop('pages', None)
+        edition = fields.pop('edition', None)
+        journal = fields.pop('journal', None)
+        school = fields.pop('school', None)
+        address = fields.pop('address', None)
+        url = fields.pop('url', None)
+        note = fields.pop('note', None)
+        number = fields.pop('number', None)
+        series = fields.pop('series', None)
+        volume = fields.pop('volume', None)
+        publisher = fields.pop('publisher', None)
+        organisation = fields.pop('organization', None)
+        chapter = fields.pop('chapter', None)
+        howpublished = fields.pop('howpublished', None)
 
         # dump the leftovers into jsondata
         jsondata = fields
