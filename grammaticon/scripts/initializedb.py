@@ -304,10 +304,10 @@ def main(_args):
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'},
-        version="v0.1",
-        doi=None,  # TODO: DOI
+        version="v1.0",
+        doi='10.5281/zenodo.19602410',
         repo='https://github.com/clld/grammaticon-data',
-        zenodo_concept_doi=None)  # TODO: Concept DOI
+        zenodo_concept_doi='10.5281/zenodo.19602409')
     DBSession.add(dataset)
 
     contributors = make_contributors(csv_collections)
