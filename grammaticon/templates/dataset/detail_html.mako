@@ -24,7 +24,7 @@
 
   <%util:well title="Version">
     <p>
-      <a href="${req.dataset.domain}">${req.dataset.domain}</a>
+      <a href="https://${req.dataset.domain}">${req.dataset.domain}</a>
       serves the latest released version of data curated at
       ${h.external_link(req.dataset.repo)}.
       % if ctx.zenodo_concept_doi:

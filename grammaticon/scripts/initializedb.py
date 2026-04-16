@@ -299,7 +299,7 @@ def main(_args):
         publisher_place="Leipzig",
         publisher_url="http://www.eva.mpg.de",
         license="http://creativecommons.org/licenses/by/4.0/",
-        domain='https://grammaticon.clld.org',
+        domain='grammaticon.clld.org',
         contact='martin_haspelmath@eva.mpg.de',
         jsondata={
             'license_icon': 'cc-by.png',
