@@ -1,3 +1,4 @@
+import datetime
 import re
 import unicodedata
 from collections import Counter
@@ -304,7 +305,8 @@ def main(_args):
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'},
-        version="v1.0",
+        version='1.0',
+        published=datetime.date(2026, 4, 17),
         doi='10.5281/zenodo.19602410',
         repo='https://github.com/clld/grammaticon-data',
         zenodo_concept_doi='10.5281/zenodo.19602409')
