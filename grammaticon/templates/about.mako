@@ -122,8 +122,8 @@ helpful, such as “numerative”, “hyparctic clause”, and “duonominal cla
   the Tenth International Conference on Language Resources and Evaluation
   (LREC’16)</em>, 2393–2400.</li>
 <li>Michaelis, Susanne Maria &amp; Maurer, Philippe &amp; Haspelmath, Martin
-  &amp; Huber, Magnus (eds.). 2013. Atlas of pidgin and creole language
-  structures. Oxford: Oxford University Press.
+  &amp; Huber, Magnus (eds.). 2013. <em>Atlas of pidgin and creole language
+  structures.</em> Oxford: Oxford University Press.
   (${h.external_link('https://apics-online.info/')})</li>
 <li>Skirgård, Hedvig &amp; Haynie, Hannah J. &amp; Blasi, Damián E. &amp;
   Hammarström, Harald &amp; Collins, Jeremy &amp; Latarche, Jay J. &amp; Lesage,
