@@ -22,6 +22,7 @@ class GrammaticonDataset(CustomModelMixin, Dataset):
 @implementer(IConcept)
 class Concept(IdNameDescriptionMixin, Base):
     pk = Column(Integer, primary_key=True)
+    grammacode = Column(Unicode)
     comments = Column(Unicode)
     wikipedia_counterpart = Column(Unicode)
     wikipedia_url = Column(Unicode)

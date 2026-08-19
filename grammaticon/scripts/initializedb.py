@@ -99,6 +99,7 @@ def make_concepts(csv_concepts, csv_concept_features):
             id=concept['ID'],
             name=concept['Name'],
             description=concept.get('Description'),
+            grammacode=concept.get('Grammacode'),
             comments=concept.get('Comment'),
             wikipedia_counterpart=concept.get('Wikipedia_Counterpart'),
             wikipedia_url=concept.get('Wikipedia_URL'),
