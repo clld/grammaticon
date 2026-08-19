@@ -2,6 +2,7 @@
 <%namespace name="util" file="../util.mako"/>
 <%! active_menu_item = "concepts" %>
 <%block name="title">Concept: ${ctx.name}</%block>
+<%! import re %>
 <%! from clld.db.models import common %>
 <%! import grammaticon.models as m %>
 
@@ -59,7 +60,7 @@
   % endif
   % if ctx.comments:
   <dt>Comments</dt>
-  <dd>${u.md(ctx.comments)|n}</dd>
+  <dd>${u.md(re.sub(r'\s*[¶❡]\s*', '\n\n', ctx.comments))|n}</dd>
   % endif
   % if ctx.croft_counterpart:
   <dt>Croft's comparative concept</dt>
@@ -88,7 +89,7 @@
   % endif
   % if ctx.quotation:
   <dt>Quotation</dt>
-  <dd>${ctx.quotation}</dd>
+  <dd>${u.md(re.sub(r'\s*[¶❡]\s*', '\n\n', ctx.quotation))|n}</dd>
   % endif
   % if ctx.references:
   <dt>Sources</dt>
