@@ -45,7 +45,7 @@
 definitions and links to other resources and comparative data collections such
 as WALS (The World Atlas of Language Structures) and Grambank.</p>
 
-<p>Version 1.0 is an early-release version that is still in some ways
+<p>Version ${ctx.version} is an early-release version that is still in some ways
 incomplete. The plan is to update and expand it regularly.</p>
 
 <h3>Concepts</h3>

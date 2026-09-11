@@ -306,7 +306,7 @@ def main(_args):
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'},
-        version='1.0',
+        version='1.1',
         published=datetime.date(2026, 9, 11),
         doi='10.5281/zenodo.22703116',
         repo='https://github.com/clld/grammaticon-data',
