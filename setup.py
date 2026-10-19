@@ -14,12 +14,12 @@ setup(
         'markdown',
         'sqlalchemy<2.0',
         'waitress',
+        'psycopg2',
     ],
     extras_require={
         'dev': [
             'flake8',
             'tox',
-            'psycopg2',
         ],
         'test': [
             'mock',
