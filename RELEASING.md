@@ -2,7 +2,7 @@
 
 ```shell
 git clone https://github.com/clld/grammaticon
-git clone https://github.com/clld/grammaticon-data
+git clone --branch v1.1 --depth 1 https://github.com/clld/grammaticon-data
 cd grammaticon
 pip install -e .[test]
 ```
@@ -23,7 +23,5 @@ pip freeze > requirements.txt
 
 Store a db dump:
 ```shell
-pg_dump -xO grammaticon > grammaticon.sql
-zip grammaticon.sql.zip grammaticon.sql
-rm grammaticon.sql
+pg_dump -xO --compress gzip:9 grammaticon > grammaticon.sql.gz
 ```
