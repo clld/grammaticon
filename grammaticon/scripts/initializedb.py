@@ -306,9 +306,9 @@ def main(_args):
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'},
-        version='1.1',
+        version='1.2',
         published=datetime.date(2026, 9, 11),
-        doi='10.5281/zenodo.22703116',
+        doi='10.5281/zenodo.24370200',
         repo='https://github.com/clld/grammaticon-data',
         zenodo_concept_doi='10.5281/zenodo.19602409')
     DBSession.add(dataset)
