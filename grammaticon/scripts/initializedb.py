@@ -5,7 +5,7 @@ from collections import Counter
 from itertools import islice
 from pathlib import Path
 
-from nameparser import HumanName
+import nameparser
 
 from clld.db.meta import DBSession
 from clld.db.models import common
@@ -47,8 +47,8 @@ def iter_list_authors(coll):
 
 
 def normalise_name(name):
-    name = HumanName(name.strip())
-    return slug(f'{name.last}{name.first}')
+    name = nameparser.parse(name.strip())
+    return slug(f'{name.family}{name.given}')
 
 
 def make_contributors(csv_collections):

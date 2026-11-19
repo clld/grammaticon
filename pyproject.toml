@@ -1,3 +1,85 @@
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "grammaticon"
+version = "0.0.0"
+requires-python = ">= 3.11"
+dependencies = [
+    "clld>=13",
+    "clldmpg>=4.2",
+    "waitress",
+    "psycopg",
+    "markdown",
+]
+authors = [
+    { name="Johannes Englisch", email="johannes_englisch@eva.mpg.de" },
+]
+description = "grammaticon"
+readme = "README.md"
+keywords = ["web", "pyramid", "pylons"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Framework :: Pyramid",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+]
+
+[project.urls]
+Repository = "https://github.com/clld/grammaticon"
+Issues = "https://github.com/clld/grammaticon/issues"
+
+[project.optional-dependencies]
+dev = [ "flake8" ]
+test = [
+    "mock",
+    "pytest",
+    "pytest-clld",
+    "pytest-cov",
+    "coverage",
+    "selenium",
+    "zope.component",
+]
+initdb = [
+    "clld[initdb]",
+    "csvw",
+    "simplepybtex",
+]
+
+[project.entry-points."paste.app_factory"]
+main = "grammaticon:main"
+
+[tool.pytest.ini_options]
+minversion = "5.0"
+testpaths = ["tests"]
+addopts = [
+    "--cov=grammaticon",
+    "--cov-report=term-missing",
+]
+filterwarnings = [
+    "default::sqlalchemy.exc.LegacyAPIWarning",
+    "default::sqlalchemy.exc.SAWarning",
+]
+
+[tool.setuptools]
+packages = ["grammaticon"]
+
+[tool.setuptools.package-data]
+grammaticon = [
+    "static/**/*",
+    "locale/**/*",
+    "templates/**/*",
+]
+
+[tool.coverage.run]
+source = "grammaticon"
+
+[tool.coverate.report]
+show_missing = true
+skip_covered = true
