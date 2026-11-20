@@ -265,19 +265,19 @@ def iter_concept_references(csv_concepts, concepts, sources):
                         description=context)
 
 
-def main(_args):
+def main(args):
     # read data
 
-    # cd from `somewhere/<repo>/grammaticon/scripts/initializedb.py`
-    # to `somewhere/grammaticon-data/csvw`
-    # FIXME: There Must Be a Better Way™
-    csvw_folder = (
-        Path(__file__).parent.parent.parent.parent
-        / 'grammaticon-data' / 'csvw')
+    if args.assume_yes:
+        csvw_folder = (
+            Path(__file__).parent.parent.parent / 'grammaticon-data' / 'csvw')
+    else:
+        csvw_folder = Path(input('grammaticon CSVW folder: '))
+    assert csvw_folder.is_dir()
 
     csv_collections = [
         {k: v for k, v in row.items() if v}
-            for row in dsv.reader(csvw_folder / 'collections.csv', dicts=True)]
+        for row in dsv.reader(csvw_folder / 'collections.csv', dicts=True)]
     csv_features = [
         {k: v for k, v in row.items() if v}
         for row in dsv.reader(csvw_folder / 'features.csv', dicts=True)]
